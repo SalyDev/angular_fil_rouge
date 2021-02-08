@@ -1,0 +1,95 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+    <mat-card fxLayout="row" fxFlex="100" fxLayoutAlign="center" class="container-bloc">
+        <!-- <mat-toolbar fxLayoutAlign="center center">Creation de promo</mat-toolbar> -->
+
+        <form [formGroup]="promoForm" fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" (ngSubmit)="onSubmitForm()">
+
+            <div fxFlex="50" fxLayout="column">
+                <mat-form-field appearance="outline">
+                    <mat-label>Titre</mat-label>
+                    <input matInput formControlName="titre">
+                    <mat-error *ngIf="form.titre.errors && form.titre.errors.required">*Champs Obligatoire</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
+                        formControlName="description"></textarea>
+                    <mat-error *ngIf="form.description.errors && form.description.errors.required">*Champs obligatoire
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Lieu de la promotion</mat-label>
+                    <input matInput formControlName="lieu">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Référence Agate</mat-label>
+                    <input matInput formControlName="referenceagate">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Langue</mat-label>
+                    <mat-select formControlName="langue" matInput>
+                        <mat-option value="Anglais">Anglais</mat-option>
+                        <mat-option value="Français">Français</mat-option>
+                        <mat-option value="Wolof">Wolof</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.langue.errors && form.langue.errors.required">*Champs Obligatoire</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Choix de fabrique</mat-label>
+                    <mat-select matInput formControlName="choixdefabrique">
+                        <mat-option value="Sonatel Academy">Sonatel Academy</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div fxFlex="50" fxLayout="column">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Date début</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="datedebut">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="form.datedebut.errors && form.datedebut.errors.required">*Champs obligatoire
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Date fin</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="datefin">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="form.datefin.errors && form.datefin.errors.required">*Champs Obligatoire
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Référentiel</mat-label>
+                    <mat-select formControlName="referentiel">
+                        <p *ngFor="let referentiel of referentiels">
+                            <mat-option value={{referentiel.libelle}}>{{referentiel.libelle}}</mat-option>
+                        </p>
+                    </mat-select>
+                    <mat-error *ngIf="form.referentiel.errors && form.referentiel.errors.required">*Champs obligatoire
+                    </mat-error>
+                </mat-form-field>
+               
+
+
+                <!-- apercu avatar -->
+                <div style="margin-bottom: 20px;">
+                <div>
+                    <img class="view-avatar-promo" [src]="imgSource" alt="">
+                </div>
+                    <mat-label>Avatar</mat-label>
+                    <input type="file" name="avatar" (change)="onFileSelect($event)">
+                    <mat-error *ngIf="promoForm.controls.avatar.errors && promoForm.controls.avatar.errors.requiredFileType">Type de fichier invalide</mat-error> 
+                </div>
+                <div fxLayout="column" fxLayoutGap="10px">
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="!promoForm.valid">Créer</button>
+                    <button mat-raised-button color="accent" type="reset"
+                        (click)="onCancelAdd()">Annuler</button>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+</div>

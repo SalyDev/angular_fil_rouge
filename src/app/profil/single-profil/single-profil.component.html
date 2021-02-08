@@ -1,0 +1,14 @@
+<div fxLayout="column" fxLayoutAlign="center center" class="container-bloc">
+  <mat-card fxLayout="column" fxLayoutAlign="center center">
+    <mat-toolbar fxLayoutAlign="center center" fxFlex="50">Modification de profil</mat-toolbar>
+    <form [formGroup]="profilForm" fxLayoutAlign="stretch" fxLayout="column" fxLayoutGap="15px" *ngIf="profilForm" (ngSubmit)="onSubmitForm()">
+      <mat-form-field  appearance="outline">
+        <mat-label>Libellé</mat-label>
+        <input matInput formControlName="libelle">
+        <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error> 
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Modifier</button>
+      <button mat-raised-button color="accent" type="reset" (click)="onCancelUpdate()">Annuler</button>
+    </form>
+  </mat-card>
+</div> 

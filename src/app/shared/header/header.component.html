@@ -1,0 +1,93 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+      <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+        <mat-icon>menu</mat-icon>
+      </button> -->
+
+      <button mat-icon-button (click)="toggleSideBar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      
+
+      <div fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+          <ul fxLayout="row" fxLayoutGap="20px">
+            <li>
+              <button mat-button [matMenuTriggerFor]="menu">
+                <mat-icon>person_outline</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="loggout()">
+                  <mat-icon>exit_to_app</mat-icon>
+                  Deconnexion
+                </button>
+              </mat-menu>
+            </li>
+          </ul> 
+      </div>
+    </mat-toolbar-row> 
+</mat-toolbar>
+        <!-- <ul>
+            <li><a routerLink="/apprenants">Lien 1</a></li>
+            <li><a routerLink="/users/new">Lien 2</a></li>
+        </ul> -->
+      <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Lien1</span>
+      <span class="example-spacer"></span>
+      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <mat-icon>favorite</mat-icon>
+      </button>
+      <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+        <mat-icon>share</mat-icon>
+      </button> -->
+    
+  <!-- </p> -->
+
+
+<!-- <p>
+    <mat-toolbar>
+      <span>My Application</span>
+    </mat-toolbar>
+  </p>
+  
+  <p>
+    <mat-toolbar>
+     <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>My App</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+     <mat-icon>share</mat-icon>
+   </button>
+  </mat-toolbar>
+  </p> -->
+  
+  
+  <!-- <p>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <span>My App</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </mat-toolbar-row>
+  
+      <mat-toolbar-row>
+        <span>Second Line</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+          <mat-icon>favorite</mat-icon>
+        </button>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+          <mat-icon>share</mat-icon>
+        </button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </p> -->

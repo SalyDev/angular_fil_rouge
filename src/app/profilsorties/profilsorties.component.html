@@ -1,0 +1,121 @@
+<div class="search-div">
+  <button aria-label="Close" style="margin-right: 5px;" class="btn btn-button btn-outline-info" (click)="addPs()">
+    <span class="material-icons">
+      add
+    </span>
+  </button>
+  <mat-form-field class="search-form-field" floatLabel="never">
+    <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
+    <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
+      (click)="onSearchClear()"></button>
+  </mat-form-field>
+</div>
+
+<div fxLayout="row" fxLayout.lt-sm="column">
+  <div fxLayout="column" style="width: 100%;" [ngClass]="{'most_width': isShowDetails}">
+    <mat-table [dataSource]="dataSourceOne" matSort>
+      <ng-container matColumnDef="{{col}}" *ngFor="let col of displayedColumnsOne">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <!-- si !element.isEdit on affiche le boutton-->
+          <div *ngIf="!element.isEdit">
+            <div class="btn-edit" *ngIf="col === '$$edit'; spanHeader">
+              <!-- <button (click)="element.isEdit = !element.isEdit">Edit</button> -->
+              <button (click)="element.isEdit = !element.isEdit; onInitInput()" style="margin-right: 5px;"
+                class="btn btn-button btn-outline-info">Modifier</button>
+              <button (click)="showApprenantsOfPs(element.id)" style="margin-right: 5px;"
+                class="btn btn-button btn-outline-warning">Detail</button>
+              <button (click)="onArchivePs(element.id)" class="btn btn-button btn-outline-danger">Supprimer</button>
+
+            </div>
+            <span #spanHeader>
+              {{element[col]}}
+            </span>
+          </div>
+
+          <div *ngIf="element.isEdit">
+            <div class="btn-edit" *ngIf="col==='$$edit'; else defaultField">
+              <button (click)="element.isEdit = !element.isEdit; onEdit(element.id)" style="margin-right: 5px;"
+                class="btn btn-button btn-outline-info">Valider</button>
+            </div>
+            <!-- si col!=$$edit cad col=libelle on va afficher le template -->
+            <ng-template #defaultField>
+              <mat-form-field appearance="outline">
+                <!-- <mat-label>{{col}}</mat-label> -->
+                <!-- <form #psForm="ngForm"> -->
+                <input name="libelle" type="text" matInput value="{{element.libelle}}" (change)="changeLibelle($event)">
+                <!-- </form> -->
+              </mat-form-field>
+            </ng-template>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+
+
+      <ng-container matColumnDef="loading">
+        <mat-footer-cell *matFooterCellDef colspan="6">
+          Chargement des données...
+        </mat-footer-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumnsOne"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumnsOne;"></mat-row>
+      <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':dataSourceOne!=null}"></mat-footer-row>
+
+    </mat-table>
+    <mat-paginator #TableOnePaginator="matPaginator" [pageSizeOptions]="[7, 10, 25, 100]" [pageSize]="7" showFirstLastButtons></mat-paginator>
+    <div fxLayoutAlign="center" *ngIf="addNewPs">
+      <!-- <app-new-profilsortie></app-new-profilsortie> -->
+
+      <!-- formulaire d'ajout -->
+      <form [formGroup]="psForm" fxLayoutGap="10px">
+        <mat-form-field appearance="outline">
+          <mat-label>Libellé</mat-label>
+          <input matInput formControlName="libelle">
+          <mat-error *ngIf="psForm.controls.libelle.errors && psForm.controls.libelle.errors.required">Libellé
+            Obligatoire</mat-error>
+        </mat-form-field>
+        <button type="submit" (click)="onSubmitForm()" style="display: inline-block; width: 10px;" aria-label="Close"
+          style="margin-right: 5px;" class="btn btn-button btn-outline-info"
+          [disabled]="!psForm.valid">Valider</button>
+        <!-- <button mat-raised-button color="primary" type="submit" (click)="onSubmitForm()">Créer</button> -->
+        <button type="button" color="accent" type="reset" class="btn btn-button btn-outline-warning"
+          (click)="onCancelAdding()">Annuler</button>
+      </form>
+      <!-- formulaire d'ajout -->
+    </div>
+  </div>
+
+
+  <!-- liste des apprenants du profil de sortie -->
+  <div [ngClass]="{'hide':!isShowDetails}"  fxFlex="40" style="border-left: 0.1px solid rgb(190, 187, 187);">
+    <mat-table [dataSource]="dataSourceTwo">
+      <ng-container matColumnDef="avatar">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let apprenant">
+          <img class="img_avatar" src="{{ 'data:image/jpg;base64,' + apprenant.avatar }}" alt="">
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="nom">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let apprenant">{{apprenant.prenom}} {{apprenant.nom}}</mat-cell>
+      </ng-container>
+      <!-- <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+        <mat-cell *matCellDef="let apprenant">{{apprenant.email}}</mat-cell>
+      </ng-container> -->
+      <mat-header-row *matHeaderRowDef="displayedColumnsTwo"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumnsTwo;"></mat-row>    
+    </mat-table>
+    <mat-paginator #TableTwoPaginator="matPaginator" [pageSize]="7"></mat-paginator>
+    <div fxLayout="column"  fxLayoutAlign="center center">
+    <button aria-label="Close" fxLayoutAlign="center center"  style="width: 5px; height: 7px;" class="btn btn-button btn-outline-danger" (click)="closeDetails()">
+      <span class="material-icons" >
+        close
+      </span>
+    </button>
+  </div>
+  </div>
+  </div>
+  

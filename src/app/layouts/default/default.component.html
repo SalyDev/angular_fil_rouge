@@ -1,0 +1,12 @@
+<app-header (toggle)="sideBarToggler($event)"></app-header>
+<mat-drawer-container color="primary" fxFlex="100" fxFlex.lt-sm="100">
+     <mat-drawer mode="side"  [opened]="sideBarOpen">
+        <app-sidenav></app-sidenav >
+     </mat-drawer>
+
+     <mat-drawer-content>
+        <router-outlet></router-outlet>
+     </mat-drawer-content>
+</mat-drawer-container>
+<app-footer></app-footer>
+

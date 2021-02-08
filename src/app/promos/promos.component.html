@@ -1,0 +1,231 @@
+<div fxLayout="column">
+  <div class="search-div" fxLayoutAlign="center">
+    <button aria-label="Ajouter" routerLink="new" style="margin-right: 5px;" class="btn btn-button btn-outline-info">
+      <span class="material-icons">
+        add
+      </span>
+    </button>
+    <mat-form-field fxFlex="75" class="search-form-field" floatLabel="never">
+      <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
+      <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
+        (click)="onSearchClear()"></button>
+    </mat-form-field>
+  </div>
+  <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="center" fxLayoutGap="10px">
+    <mat-card fxFlex="75" fxLayout="column" class="example-card" *ngFor="let promo of obs | async">
+      <mat-card-header>
+        <mat-card-title>{{promo.titre}}</mat-card-title>
+        <mat-card-subtitle>Promo</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <span class="small" style="margin:auto">Description</span>
+          <p>{{promo.description}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Lieu</span>
+          <p>{{promo.lieu}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Référence Agate</span>
+          <p>{{promo.referenceagate}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Choix de fabrique</span>
+          <p>{{promo.choixdefabrique}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Date début</span>
+          <p>{{promo.datedebut | date:"dd/MM/yy"}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Date fin</span>
+          <p>{{promo.datefin | date:"dd/MM/yy"}}</p>
+        </div>
+        <mat-divider></mat-divider>
+
+        <!-- <div style="margin-top: 10px;">
+            <mat-expansion-panel fxFlex="100" (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Groupes de compétences
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div *ngFor="let gc of referentiel.groupeCompetences">
+                <div>
+                  <p>
+                    {{gc.libelle}}
+                  </p> -->
+        <!-- competences -->
+        <!-- <div>
+                    <mat-expansion-panel fxFlex="100" (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Compétences
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <p *ngFor="let competence of gc.competences">
+                        {{competence.libelle}}
+                      </p>
+                    </mat-expansion-panel>
+                  </div> -->
+        <!-- competences -->
+        <!-- </div> -->
+        <!-- </div>
+            </mat-expansion-panel>
+          </div> -->
+
+      </mat-card-content>
+      <mat-card-actions>
+        <button style="margin-right: 5px;" [routerLink]="[promo.id]"
+          class="btn btn-button btn-outline-info">Detail</button>
+        <button href="#attente" class="btn btn-button btn-outline-warning" style="margin-right: 5px;"
+          (click)="getApprenantsInPromo(promo.id, promo.titre)">Gestion des apprenants</button>
+        <button class="btn btn-button btn-outline-danger" (click)="onDeletePromo(promo.id)">Supprimer</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <mat-paginator [pageSize]="2" [pageSizeOptions]="[3, 10, 25, 100]"></mat-paginator>
+
+  <!-- affichage des apprenants en attente d'une promo -->
+  <!-- <div>
+    
+  </div> -->
+  <div id="attente" *ngIf="isShownApprenantEnAttente" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
+    <mat-card fxFlex="50">
+      <mat-card-header>
+        <mat-card-title>{{isShownApprenantInPromo ? "Liste des apprenants de la promo" : "Ajout d'apprenants"}}</mat-card-title>
+        <mat-card-subtitle> {{promoTitle}}: {{apprenantsInPromo.length}} apprenants</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="isShownApprenantInPromo">
+          <div fxLayout="row" fxLayoutAlign="end">
+            <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" (click)="onAddApprenant()">
+              <span class="material-icons">
+                add
+              </span>
+            </button>
+
+            <!-- <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" >{{btnLibelle}}</button> -->
+          </div>
+
+          <!-- apprenants ayant rejoit la promo -->
+          <cdk-virtual-scroll-viewport  itemSize="10">
+          <div fxLayout="column" *cdkVirtualFor="let apprenantInPromo of ds">
+            <div fxLayout="row">
+              <div fxFlex="50">
+                <!-- <img class="img_avatar" src="{{ 'data:image/jpg;base64,' + apprenantInPromo.avatar }}" alt=""> -->
+                <!-- {{apprenantInPromo.email}} -->
+                {{apprenantInPromo.prenom}}
+                {{apprenantInPromo.nom}}
+              </div>
+
+              <!-- <cdk-virtual-scroll-viewport  itemSize="10">
+                <div *cdkVirtualFor="let apprenantInPromo of apprenantsInPromo" class="example-item">
+                  'gvg'</div>
+            </dk-virtual-scroll-viewport> -->
+
+              <div fxFlex="50" fxAlign="row" fxLayoutAlign="end">
+                <button type="button" class="btn btn-button btn-outline-warning"
+                  (click)="onDeleteApprenantOfPromo(apprenantInPromo.email)">
+                  Retirer
+                </button>
+              </div>
+
+            </div>
+
+            <mat-divider></mat-divider>
+          </div>
+        </cdk-virtual-scroll-viewport>
+        </div>
+
+        <!-- partie ajout d'apprenants -->
+        <div *ngIf="!isShownApprenantInPromo">
+          <!-- <div fxLayout="row" fxLayoutAlign="start">
+            <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" (click)="onAddApprenant()">
+              Liste
+            </button>
+          </div> -->
+          <div fxLayout="row" fxLayoutAlign="end">
+            <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" (click)="onChargeCvsFile()">
+              <!-- Charger un fichier csv -->
+              {{!isChargeCsvFile ? 'Charger un fichier csv' : 'Par emails'}}
+            </button>
+          </div>
+
+          <div *ngIf="!isChargeCsvFile; else defaultField">
+          <mat-form-field class="example-chip-list" appearance="outline">
+            <mat-label>Emails</mat-label>
+            <mat-chip-list #chipList aria-label="Nouvel apprenants">
+              <mat-chip *ngFor="let email of emails" [selectable]="selectable" [removable]="removable"
+                (removed)="remove(email)">
+                {{email}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Nouvel apprenant..." [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+          </mat-form-field>
+        </div>
+
+        <!-- chargement du fichier excel -->
+        <ng-template #defaultField>
+          <mat-form-field fxLayoutAlign="center">
+            <mat-label>Importer un fichier excel</mat-label>
+            <textarea matInput disabled cdkTextareaAutosize cdkAutosizeMaxCols="20" style="width: 100%;"></textarea>
+            <input type="file" name="csvfile" (change)="onFileSelect($event)">
+            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
+        </mat-form-field>
+        </ng-template>
+
+        <div fxLayout="row" fxLayoutAlign="center">
+          <button style="margin-right: 5px;" class="btn btn-button btn-outline-info" (click)="onSubmit()">Ajouter</button>
+          <button class="btn btn-button btn-outline-warning" style="margin-right: 5px;" (click)="onCancelAdding()">Annuler</button>
+        </div>
+
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card fxFlex="50">
+      <mat-card-header>
+        <mat-card-title>Liste des apprenants en attente</mat-card-title>
+        <mat-card-subtitle>{{promoTitle}} : {{apprenantsEnAttente.length}} apprenant(s) en attente</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- <div fxFlex="50"> -->
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button *ngIf="apprenantsEnAttente.length!=0" style="margin-bottom: 5px;"
+            class="btn btn-button btn-outline-info" (click)="onRelanceAll()">Relancer
+            toutes les invitations</button>
+        </div>
+        <!-- </div> -->
+        <div fxLayout="column" *ngFor="let apprenantEnAttente of apprenantsEnAttente" style="margin-bottom: 5px;">
+          <div fxLayout="row">
+            <div fxFlex="50">
+              {{apprenantEnAttente.user.email}}
+            </div>
+
+            <div fxFlex="50" fxAlign="row" fxLayoutAlign="end">
+              <button type="button" class="btn btn-button btn-outline-warning"
+                (click)="onRelanceOne(apprenantEnAttente.user.id)">
+                Relancer
+              </button>
+            </div>
+
+          </div>
+
+          <mat-divider></mat-divider>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

@@ -1,0 +1,83 @@
+<div fxLayout="column">
+  <div class="search-div">
+    <button aria-label="Close" routerLink="new" style="margin-right: 5px;" class="btn btn-button btn-outline-info">
+      <span class="material-icons" >
+          add
+      </span>
+    </button>
+    <mat-form-field class="search-form-field" floatLabel="never">
+      <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
+      <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
+        (click)="onSearchClear()"></button>
+    </mat-form-field>
+  </div>
+  <div fxLayout="row" fxLayout.lt-sm="column" fxFlex="100" fxLayoutAlign="center" fxLayoutGap="10px">
+    <mat-card fxFlex="50" fxLayout="column" class="example-card" *ngFor="let referentiel of obs | async">
+      <mat-card-header>
+        <mat-card-title>{{referentiel.libelle}}</mat-card-title>
+        <mat-card-subtitle>Référentiel</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <span class="small" style="margin:auto">Présentation</span>
+          <p>{{referentiel.presentation | resume: 50}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Programme</span>
+          <!-- <p>{{referentiel.programme}}</p> -->
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Critères d'évaluation</span>
+          <p>{{referentiel.critereEvaluation | resume: 50}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div>
+          <span class="small" style="margin:auto">Critère d'admission</span>
+          <p>{{referentiel.critereAdmission | resume: 50}}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div style="margin-top: 10px;">
+          <mat-expansion-panel fxFlex="100" (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Groupes de compétences
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div *ngFor="let gc of referentiel.groupeCompetences">
+              <div>
+                <p>
+                  {{gc.libelle}}
+                </p>
+                <!-- competences -->
+                <div>
+                  <mat-expansion-panel fxFlex="100" (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Compétences
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p *ngFor="let competence of gc.competences">
+                      {{competence.libelle}}
+                    </p>
+                  </mat-expansion-panel>
+                </div>
+                <!-- competences -->
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+
+      </mat-card-content>
+      <mat-card-actions>
+        <button style="margin-right: 5px;" [routerLink]="[referentiel.id]"
+          class="btn btn-button btn-outline-info">Editer</button>
+          <button class="btn btn-button btn-outline-danger" style="margin-right: 5px;" (click)="archiveReferentiel(referentiel.id)">Supprimer</button>
+          <button class="btn btn-button btn-outline-warning" (click)="generatePDF(referentiel.id)">Imprimer</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <mat-paginator [pageSize]="3"></mat-paginator>
+</div>
+

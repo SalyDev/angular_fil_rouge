@@ -1,0 +1,30 @@
+
+:host{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+mat-drawer{
+    width: 17%;
+}
+
+@media all and (max-width: 1000px) and (min-width: 375px){
+    mat-drawer{
+        width: 100%;
+    }
+  }
+
+mat-drawer-container{
+    height: 100%;
+}
+
+mat-drawer-content{
+     padding: 20px;
+     /* overflow: auto; */
+    /* height: 100%; */ 
+    /* top:inherit;
+    overflow: hidden;
+    border: 1px solid red; */
+}
+

@@ -1,0 +1,108 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <mat-card fxLayout="column" fxLayoutAlign="center" fxFlex="60" fxFlex.lt-sm="100">
+    <form [formGroup]="competenceForm" fxLayoutAlign="stretch" fxLayout="column" fxLayoutGap="15px"
+      *ngIf="competenceForm" (ngSubmit)="onSubmitForm()">
+      <mat-form-field appearance="outline">
+        <mat-label>Libellé</mat-label>
+        <input matInput formControlName="libelle">
+        <mat-error *ngIf="competenceForm.controls.libelle.errors && competenceForm.controls.libelle.errors.required">
+          Libellé Obligatoire</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Descriptif</mat-label>
+        <textarea matInput formControlName="descriptif" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+        <mat-error *ngIf="competenceForm.controls.libelle.errors && competenceForm.controls.libelle.errors.required">
+          Libellé Obligatoire</mat-error>
+      </mat-form-field>
+
+      <!-- les 3 niveaux -->
+      <div *ngFor="let i of numberOfNiveaux">
+        <mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Niveau {{i}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div fxLayout="column">
+            <mat-form-field fxFlex="50" appearance="outline">
+              <mat-label>Actions</mat-label>
+              <textarea formControlName="actions{{i}}" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+              <!-- <mat-error
+                *ngIf="competenceForm.controls.actions1.errors && competenceForm.controls.actions1.errors.required">
+                *Champs Obligatoire</mat-error>
+              <mat-error
+                *ngIf="competenceForm.controls.actions2.errors && competenceForm.controls.actions2.errors.required">
+                *Champs Obligatoire</mat-error>
+              <mat-error
+                *ngIf="competenceForm.controls.actions3.errors && competenceForm.controls.actions3.errors.required">
+                *Champs Obligatoire</mat-error> -->
+            </mat-form-field>
+            <mat-form-field fxFlex="50" appearance="outline">
+              <mat-label>Ctritères d'evaluation</mat-label>
+              <textarea formControlName="critere_evaluation{{i}}" matInput cdkTextareaAutosize
+                cdkAutosizeMinRows="3"></textarea>
+              <!-- <mat-error
+                *ngIf="competenceForm.controls.critere_evaluation1.errors && competenceForm.controls.critere_evaluation1.errors.required">
+                *Champs Obligatoire</mat-error>
+              <mat-error
+                *ngIf="competenceForm.controls.critere_evaluation2.errors && competenceForm.controls.critere_evaluation2.errors.required">
+                *Champs Obligatoire</mat-error>
+              <mat-error
+                *ngIf="competenceForm.controls.critere_evaluation3.errors && competenceForm.controls.critere_evaluation3.errors.required">
+                *Champs Obligatoire</mat-error> -->
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+      </div>
+
+
+      <!-- groupe competences -->
+      <mat-form-field>
+        <mat-label>Groupes de compétences</mat-label>
+        <mat-chip-list #chipList aria-label="Fruit selection">
+          <mat-chip *ngFor="let gc of gcOfCompetence" [selectable]="selectable" [removable]="removable"
+            (removed)="remove(gc)">
+            {{gc}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input readonly [matChipInputFor]="chipList">
+        </mat-chip-list>
+
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button type="button" class="btn btn-button btn-outline-info" (click)="addGc()"
+            [disabled]="groupeCompetences.length==0">
+            <span class="material-icons" style="display: block;  float: right;">
+              add
+            </span>
+          </button>
+        </div>
+      </mat-form-field>
+
+
+
+      <mat-form-field *ngIf="isAddingGc && groupeCompetences.length!==0"> Ajout de groupes de compétences
+        <mat-select [formControl]="gcControl" multiple>
+
+          <!-- <mat-select-trigger>
+              <mat-chip-list>
+                <mat-chip *ngFor="let gc of gcControl.value"
+                  [removable]="true" (removed)="onGcRemoved(gc)"> 
+                  {{ gc }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </mat-select-trigger> -->
+
+          <mat-option *ngFor="let gc of gcList" [value]="gc">{{gc}}</mat-option>
+
+        </mat-select>
+      </mat-form-field>
+      <!-- groupe competences -->
+
+
+      <button mat-raised-button color="primary" type="submit"
+        [disabled]="!competenceForm.valid">Modifier</button>
+      <button mat-raised-button color="accent" type="reset" (click)="onCancelUpdate()">Annuler</button>
+    </form>
+  </mat-card>
+</div>

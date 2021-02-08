@@ -1,0 +1,25 @@
+<div fxLayoutAlign="center center" [ngClass]="{'error_login':errorMsg}">{{errorMsg}}</div>
+<!-- [ngClass]="{'hide':!isShowDetails}"   -->
+<div fxLayout="row" fxLayoutAlign="center center" fxFlexFill class="contain">
+    <mat-card fxFlex="25" fxFlex.lt-sm="100">
+        <mat-toolbar fxLayoutAlign="center center">Connexion</mat-toolbar>
+        <form fxLayoutAlign="stretch" fxLayout="column" class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmitForm()">
+            <mat-form-field  appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+              <mat-error *ngIf="form.email.errors && form.email.errors.required">Veuillez saisir votre email</mat-error> 
+              <mat-error *ngIf="form.email.errors && form.email.errors.email">Invalide email format</mat-error> 
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Mot de passe</mat-label>
+              <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+              <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error>Veuillez saisir votre mot de passe</mat-error>
+            </mat-form-field>  
+            <br>
+            <button mat-raised-button color="primary" type="submit">Se connecter</button>
+          </form>
+    </mat-card>
+</div>

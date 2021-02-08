@@ -1,0 +1,140 @@
+<div fxLayout="column">
+    <div class="search-div">
+        <button aria-label="Close" routerLink="new" style="margin-right: 5px;" class="btn btn-button btn-outline-info">
+            <span class="material-icons">
+                add
+            </span>
+        </button>
+        <mat-form-field class="search-form-field" floatLabel="never">
+            <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
+            <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
+                (click)="onSearchClear()"></button>
+        </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+
+    <!-- compétences completes -->
+    <div fxLayoutAlign="center center" class="btn_type btn btn-button btn-info">Compétences complètes</div>
+    <div fxLayout="row" style="height: 50%;" fxLayoutGap="10px" fxLayout.lt-sm="column">
+        <mat-card fxFlex="50" fxLayout="column" class="example-card" *ngFor="let competence of obs | async">
+            <mat-card-header>
+                <mat-card-title>{{competence.libelle}}</mat-card-title>
+                <mat-card-subtitle>Compétence</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div>
+                    <span class="small" style="margin:auto">Descriptif</span>
+                    <p>{{competence.descriptif}}</p>
+                </div>
+                <mat-divider></mat-divider>
+                <!-- les 3 niveaux -->
+                <div style="margin-top: 40px;">
+                    <div *ngFor="let niveau of competence.niveaux; let i=index" style="margin-top: 20px;">
+                        <mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Niveau {{i+1}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div fxLayout="column">
+                                <mat-form-field fxFlex="50" appearance="outline">
+                                    <mat-label>Actions</mat-label>
+                                    <textarea readonly matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
+                                        value={{niveau.actions}}></textarea>
+                                </mat-form-field>
+                                <mat-form-field fxFlex="50" appearance="outline">
+                                    <mat-label>Ctritères d'evaluation</mat-label>
+                                    <textarea readonly="true" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
+                                        value={{niveau.critereEvaluation}}></textarea>
+                                </mat-form-field>
+                            </div>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+                <!-- les 3 niveaux -->
+
+                <mat-divider></mat-divider>
+                <!-- groupes competences -->
+                <div style="margin-top: 40px;">
+                    <div style="margin-top: 20px;">
+                        <mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Groupes de compétences
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div fxLayout="column">
+                                <mat-form-field *ngFor="let gc of competence.groupeCompetences" fxFlex="50"
+                                    appearance="outline">
+                                    <mat-label></mat-label>
+                                    <input matInput readonly value={{gc.libelle}}>
+                                </mat-form-field>
+                            </div>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+                <!-- groupes competences -->
+            </mat-card-content>
+            <mat-card-actions>
+                <button style="margin-right: 5px;" [routerLink]="[competence.id]"
+                    class="btn btn-button btn-outline-info">Editer</button>
+                <button class="btn btn-button btn-outline-danger" style="margin-right: 5px;"
+                    (click)="onDeleteCompetence(competence.id)">Supprimer</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <mat-paginator #PaginatorOne="matPaginator" [pageSize]="2" [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+    <!-- compétences completes -->
+
+    <!-- compétences incompletes -->
+    <div style="margin-bottom: 5px;">
+        <mat-divider></mat-divider>
+        <div fxLayoutAlign="center center" class="btn btn-button btn-info btn_type">
+            Compétences Incomplètes
+        </div>
+    </div>
+    <div fxLayout="row" fxLayout.lt-sm="column" style="height: 50%;" fxLayoutGap="10px">
+        <mat-card fxFlex="50" fxLayout="column" class="example-card" *ngFor="let competenceIncomplet of obsTwo | async">
+            <mat-card-header>
+                <mat-card-title>{{competenceIncomplet.libelle}}</mat-card-title>
+                <mat-card-subtitle>Compétence</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div>
+                    <span class="small" style="margin:auto">Descriptif</span>
+                    <p>{{competenceIncomplet.descriptif}}</p>
+                </div>
+                <mat-divider></mat-divider>
+                <!-- groupes competences -->
+                <div style="margin-top: 40px;">
+                    <div style="margin-top: 20px;">
+                        <mat-expansion-panel (opened)="panelOpenState = false" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Groupes de compétences
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div fxLayout="column">
+                                <mat-form-field *ngFor="let gc of competenceIncomplet.groupeCompetences" fxFlex="50"
+                                    appearance="outline">
+                                    <mat-label></mat-label>
+                                    <input matInput readonly value={{gc.libelle}}>
+                                </mat-form-field>
+                            </div>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+                <!-- groupes competences -->
+
+            </mat-card-content>
+            <mat-card-actions>
+                <button style="margin-right: 5px;" [routerLink]="[competenceIncomplet.id]"
+                    class="btn btn-button btn-outline-info">Editer</button>
+                <button class="btn btn-button btn-outline-danger" style="margin-right: 5px;"
+                    (click)="onDeleteCompetence(competenceIncomplet.id)">Supprimer</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <mat-paginator #PaginatorTwo="matPaginator" [pageSize]="2" [pageSizeOptions]="[2, 10, 25, 100]"></mat-paginator>
+    <!-- compétences incompletes -->
+</div>

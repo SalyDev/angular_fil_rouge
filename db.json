@@ -1,0 +1,100 @@
+{
+  "profils": [
+    {
+      "id": 1,
+      "libelle": "Admin"
+    },
+    {
+      "id": 2,
+      "libelle": "Formateur"
+    },
+    {
+      "id": 3,
+      "libelle": "CM"
+    },
+    {
+      "id": 4,
+      "libelle": "Apprenant"
+    }
+  ],
+  "users": [
+    {
+      "email": "test1@gmail.com",
+      "password": "$2a$10$GtoEIt6c79vFHUZRrDm8d.wgpu4Wf0jl1ntHa8DfVaXz7KCVoS4FS",
+      "id": 4,
+      "role":"['ROLE_ADMIN']",
+      "prenom":"Khady"
+    },
+    {
+      "email": "test2@gmail.com",
+      "password": "$2a$10$8Uf4QAe2KK//FIzHSGGuIerG9wzbudAw9sSdYfTVtdv5LMEMK0Wra",
+      "id": 5,
+      "role":"['ROLE_FORMATEUR']",
+      "prenom":"Bintou"
+    },
+    {
+      "email": "ndeyesalydione@gmail.com",
+      "password": "$2a$10$C9P0zH13Sz5Pw0FPal7bIOejll4BhL6BADY5d/EAc3W2SGxT6JjsC",
+      "id": 6,
+      "role":"['ROLE_FORMATEUR']",
+      "prenom": "Saly"
+    }
+  ],
+  "gc":[
+    {
+      "id":"1",
+      "libelle": "gc1",
+      "descriptif":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?",
+      "competences":
+      "http://localhost:3000/competences/1"
+    },
+
+    {
+      "libelle": "gc2",
+      "descriptif":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?",
+      "competences":
+      "http://localhost:3000/competences/1"
+    },
+
+    {
+      "id":2,
+      "libelle": "gc3",
+      "descriptif":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?",
+      "competences":
+          "http://localhost:3000/competences/1"
+    }
+    ],
+  "competences":[
+    {
+      "id":1,
+      "libelle":"competence1",
+      "descriptif":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?"
+    },
+    {
+      "id":1,
+      "libelle":"competence1",
+      "descriptif":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?"
+    }
+  ],
+
+  "niveaux":[
+    {
+      "id":1,
+      "critere_evaluation":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?",
+      "action":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?"
+    },
+    {
+      "id":2,
+      "critere_evaluation":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?",
+      "actions":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?"
+    },
+    {
+      "id":3,
+      "critere_evaluation":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?",
+      "actions":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel error nulla qui soluta consectetur at! Nobis quam itaque aliquam quas?"
+    }
+
+  ]
+
+  
+}

@@ -1,0 +1,104 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <mat-card fxLayout="column"  fxLayoutAlign="center" fxFlex="100">
+    <form [formGroup]="referentielForm" fxFlex="row" fxFlex="100" (ngSubmit)="onSubmitForm()"
+      *ngIf="referentielForm">
+      <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-sm="column">
+        <!-- <mat-toolbar fxLayoutAlign="center center">Modification de référentiel</mat-toolbar> -->
+        <div fxLayout="column" fxFlex="50">
+          <mat-form-field appearance="outline">
+            <mat-label>Libellé</mat-label>
+            <input matInput formControlName="libelle">
+            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Présentation</mat-label>
+            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" formControlName="presentation"></textarea>
+            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
+          </mat-form-field>
+          <!-- gc par defaut -->
+
+          <mat-form-field class="example-chip-list" appearance="outline">
+            <mat-label>Critères d'évaluation</mat-label>
+            <mat-chip-list #chipList1 aria-label="">
+              <mat-chip *ngFor="let ce of critereEvaluationList" [removable]="removable"
+                (removed)="remove(ce, critereEvaluationList)">
+                {{ce}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Nouveau Critère..." [matChipInputFor]="chipList1" appearence="outline"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="addCe($event)">
+            </mat-chip-list>
+          </mat-form-field>
+
+          <mat-label>Programme</mat-label>
+          <input type="file" name="programme" (change)="onFileSelect($event)">
+          <!-- gc par defaut -->
+
+        </div>
+        <div fxLayout="column" fxFlex="50">
+          <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
+
+          <mat-form-field class="example-chip-list" appearance="outline">
+            <mat-label>Critères d'admission</mat-label>
+            <mat-chip-list #chipList2 aria-label="">
+              <mat-chip *ngFor="let ca of critereAdmissionList" [removable]="removable"
+                (removed)="remove(ca, critereAdmissionList)">
+                {{ca}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input formControlName="critereAdmission" placeholder="Nouveau Critère..." [matChipInputFor]="chipList2"
+                appearence="outline" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="addCa($event)">
+            </mat-chip-list>
+          </mat-form-field>
+
+          <mat-form-field class="example-chip-list">
+            <mat-label>Groupes de competences</mat-label>
+            <mat-chip-list #chipList aria-label="">
+              <mat-chip *ngFor="let grcomp of gcList" [removable]="removable" (removed)="removeGc(grcomp)">
+                {{grcomp.libelle}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+            <div fxLayout="row" fxLayoutAlign="end">
+              <button type="button" class="btn btn-button btn-outline-info" (click)="AddOtherGc()">
+                <span class="material-icons" style="display: block;  float: right;">
+                  add
+                </span>
+              </button>
+            </div>
+          </mat-form-field>
+
+          <!-- liste des gc à ajouter-->
+          <mat-form-field *ngIf="isAddingGc">
+            <mat-label>Groupe de compétences</mat-label>
+            <mat-select [formControl]="gcControl" multiple (change)="addGc()">
+
+              <mat-select-trigger>
+                <mat-chip-list>
+                  <mat-chip *ngFor="let gc  of gcControl.value" [removable]="true"
+                    (removed)="remove(gc, gcControl.value)">
+                    {{ gc }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                </mat-chip-list>
+              </mat-select-trigger>
+
+              <mat-option *ngFor="let gcLibelle of gcLibelles" [value]="gcLibelle">
+                {{gcLibelle}}
+              </mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+          <button mat-raised-button color="primary" type="submit">Modifier</button>
+          <button mat-raised-button color="accent" type="reset" (click)="onCancelUpdate()">Annuler</button>
+        </div>
+      </div>
+    </form>
+  </mat-card>
+</div>

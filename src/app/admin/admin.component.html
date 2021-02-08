@@ -1,0 +1,52 @@
+<div class="search-div">
+    <mat-form-field class="search-form-field" floatLabel="never">
+        <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()"></button>
+    </mat-form-field>
+</div>
+<div class="mat-elevation-z8">
+    <mat-table [dataSource]="listData" matSort>
+        <ng-container matColumnDef="prenom">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.prenom}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="nom">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.nom}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.email}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="genre">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Genre</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.genre}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="profil">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Profil</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{(element.profil.libelle)}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button mat-icon-button [routerLink]="[element.id]"><mat-icon>launch</mat-icon></button>
+                <button mat-icon-button color="warn" (click)="onArchiveAdmin(element.id)"><mat-icon>delete_outline</mat-icon></button>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="loading">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                Chargement des données...
+            </mat-footer-cell>            
+        </ng-container>
+        <!-- <ng-container matColumnDef="noData">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                Pas de données
+            </mat-footer-cell>            
+        </ng-container> -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':listData!=null}"></mat-footer-row>
+        <!-- <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':(listData!=null && listData.admins.length==0)}"></mat-footer-row> -->
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+</div>

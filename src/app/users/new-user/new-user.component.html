@@ -1,0 +1,78 @@
+<div fxLayout="row" fxLayoutAlign="center">
+  <mat-card fxFlex="75" fxFlex.lt-sm="100" fxLayout="row" fxLayoutAlign="end center">
+    <!-- <mat-toolbar fxLayoutAlign="center center">Nouvel utilisateur</mat-toolbar> -->
+    <form fxFlex="100" fxLayoutGap="10px" fxLayout="column" [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
+
+      <div fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
+
+        <div fxFlex="20" fxLayoutAlign="center center">
+          <!-- affichage de l'avatar -->
+          <img class="view-avatar-promo" [src]="imgSource" alt="">
+        </div>
+
+        <div fxFlex="40" fxLayout="column">
+          <mat-form-field appearance="outline">
+            <mat-label>Prénom</mat-label>
+            <input matInput formControlName="prenom">
+            <mat-error *ngIf="form.email.errors && form.email.errors.required">*Champs Obligatoire</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="nom">
+            <mat-error *ngIf="form.email.errors && form.email.errors.required">*Champs Obligatoire</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+            <mat-error *ngIf="form.email.errors && form.email.errors.required">*Champs Obligatoire</mat-error>
+            <mat-error *ngIf="form.email.errors && form.email.errors.email">*Email invalide</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="40" fxLayout="column">
+          <mat-form-field appearance="outline">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+            <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.password.errors && form.password.errors.required">*Champs Obligatoire</mat-error>
+            <mat-error *ngIf="form.password.errors && form.password.errors.pattern">Le mot de passe doit contenir au
+              moins 6 caractères</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Genre</mat-label>
+            <mat-select formControlName="genre">
+              <mat-option value="">Selectionnez un genre</mat-option>
+              <mat-option value="femme">femme</mat-option>
+              <mat-option value="homme">homme</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.genre.errors && form.genre.errors.required">*Champs Obligatoire</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Profil</mat-label>
+            <mat-select formControlName="profil">
+              <p *ngFor="let profil of profils">
+                <mat-option *ngIf="profil.libelle!='apprenant'" value="{{profil.libelle}}">{{profil.libelle}}
+                </mat-option>
+              </p>
+            </mat-select>
+            <mat-error *ngIf="form.profil.errors && form.profil.errors.required">*Champs Obligatoire</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-label>Avatar</mat-label>
+      <input type="file" name="avatar" (change)="onFileSelect($event)">
+      <small *ngIf="form.avatar.errors && form.avatar.errors.required">*Veuillez choisir une image comme avatar</small>
+      <small *ngIf="form.avatar.errors && form.avatar.errors.requiredFileType">*Type de fichier invalide</small>
+      <!-- <mat-error *ngIf="userForm.get('avatar').changed &&  form.avatar.errors && form.avatar.errors.required">*Champs Obligatoire</mat-error> -->
+      <div fxLayoutAlign="center">
+        <button fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">Créer</button>
+      </div>
+      <div fxLayoutAlign="center">
+        <button fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="accent" type="reset">Annuler</button>
+      </div>
+    </form>
+  </mat-card>
+</div>
