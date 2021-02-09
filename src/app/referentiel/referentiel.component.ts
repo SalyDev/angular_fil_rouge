@@ -144,10 +144,10 @@ export class ReferentielComponent implements OnInit {
               bold: true,
               fontSize: 14,
               margin: [0, 15, 0, 15],
-              color: 'green'
+              color: '#3c908d'
             },
             myStyle: {
-              color: '#05CDF7',
+              color: '#f6812a',
               fontStyle: 'italic'
             }
           }

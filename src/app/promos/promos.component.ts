@@ -107,8 +107,8 @@ export class PromosComponent implements OnInit {
     this.promoId = id;
     this.promoTitle = promoTitle;
     this.apprenantsInPromo = [];
-    this.ds = new MyDataSource(this.userService, id);
-    console.log(this.ds);
+    // this.ds = new MyDataSource(this.userService, id);
+    // console.log(this.ds);
     // const url = environment.apiUrl + '/admin/promos/' + id;
     // this.userService.view(url).subscribe(
     //   (promo) => {
@@ -233,7 +233,6 @@ export class PromosComponent implements OnInit {
       this.emails.forEach(email => {
         this.apprenants = this.apprenants + ' ' + email;
         // on genere la carte de l'etudiant
-        this.generateStudentCard(email, 'prenom', 'nom')
       });
 
       // console.log(this.apprenants);
@@ -249,8 +248,12 @@ export class PromosComponent implements OnInit {
     }
     const url = environment.apiUrl + '/admin/promos/' + this.promoId + '/apprenants';
     this.userService.add(url, body).subscribe(
-      (sucess) => {
-        console.log(sucess);
+      (addedStudents) => {
+        console.log(addedStudents);
+        addedStudents.forEach(addedStudent => {
+          this.generateStudentCard(addedStudent.email, addedStudent.prenom, addedStudent.nom, addedStudent.avatar);
+        });
+
         this.isShownApprenantInPromo = true;
         // on genere le pdf avec les infos et le code qr de l'apprenant
       },
@@ -258,35 +261,64 @@ export class PromosComponent implements OnInit {
         console.log(error);
       }
     )
+    // this.generateStudentCard(email);
   }
 
   // fonction pour generer la carte de l'etudiant
-  generateStudentCard(email:string, prenom:string, nom:string)
+  generateStudentCard(email:string, prenom: string, nom:string, image:any)
   {
     let docDefinition = 
     {
-      header: 'Carte Etudiant',
+      header: [
+        {
+          text: 'Sonatel Academy',
+          style: 'myStyle'
+        }
+      ],
       content: [
         {
-          columns: 
-          [
+          columns: [
             [
-              {text: 'Prénom'},
-              {text: 'Nom'},
+              {
+                image: 'data:image/jpg;base64,' + image,
+                fit: [100, 100],
+            },
             ],
             [
+              {
+                text: 'Email',
+                style:'titre'
+              },
+              {text: email},
+              {text: 'Prénom', style:'titre'},
               {text: prenom},
-              {text: nom}
+              {text: 'Nom', style:'titre'},
+              {text: nom},
+              [{text:  'Code Qr' , style:'titre' }],  
+              [{qr: email, fit:  '100'  }], 
             ]
-          ],
-        },
-        {
-          columns:[
-            [{qr: email, fit:  '50'  }],  
-            [{text:  'Signature' , alignement:  'right' , italics:  true  }],  
           ]
+        },    
+      ],
+      footer: [
+        {
+          text: 'Coding For Better Life',
+          style: 'myStyle'
         }
-      ]
+      ],
+      styles: {  
+        titre: {  
+            bold: true, 
+            fontSize: 14,  
+            color: '#3c908d',
+            fontStyle: 'italic',
+            margin: [0, 0, 5, 0]  
+        },
+        myStyle: {
+          fontStyle: 'italic',
+          color: '#f6812a'
+        } 
+    } 
     };
     pdfMake.createPdf(docDefinition).open();
   }
