@@ -95,6 +95,7 @@ export class NewGcComponent implements OnInit {
         "descriptif": "...",
         "etat": "incomplet",
       }
+     
       // variable permettant de tester si la compétence à ajouter dans competencesIri
       // n'existe pas deja dans le tableau
       let isContain = false;
@@ -107,7 +108,6 @@ export class NewGcComponent implements OnInit {
         this.competencesIri.push(mycompetence);
       }
     });
-
     if(this.competencesIri.length==0){
       alert('Donner au moins une compétence');
       return;

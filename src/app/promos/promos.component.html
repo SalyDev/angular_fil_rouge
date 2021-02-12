@@ -1,4 +1,3 @@
-<div fxLayout="column">
   <div class="search-div" fxLayoutAlign="center">
     <button aria-label="Ajouter" routerLink="new" style="margin-right: 5px;" class="btn btn-button btn-outline-info">
       <span class="material-icons">
@@ -48,38 +47,6 @@
           <p>{{promo.datefin | date:"dd/MM/yy"}}</p>
         </div>
         <mat-divider></mat-divider>
-
-        <!-- <div style="margin-top: 10px;">
-            <mat-expansion-panel fxFlex="100" (opened)="panelOpenState = false" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Groupes de compétences
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-              <div *ngFor="let gc of referentiel.groupeCompetences">
-                <div>
-                  <p>
-                    {{gc.libelle}}
-                  </p> -->
-        <!-- competences -->
-        <!-- <div>
-                    <mat-expansion-panel fxFlex="100" (opened)="panelOpenState = false" (closed)="panelOpenState = false">
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          Compétences
-                        </mat-panel-title>
-                      </mat-expansion-panel-header>
-                      <p *ngFor="let competence of gc.competences">
-                        {{competence.libelle}}
-                      </p>
-                    </mat-expansion-panel>
-                  </div> -->
-        <!-- competences -->
-        <!-- </div> -->
-        <!-- </div>
-            </mat-expansion-panel>
-          </div> -->
-
       </mat-card-content>
       <mat-card-actions>
         <button style="margin-right: 5px;" [routerLink]="[promo.id]"
@@ -90,142 +57,166 @@
       </mat-card-actions>
     </mat-card>
   </div>
-  <mat-paginator [pageSize]="2" [pageSizeOptions]="[3, 10, 25, 100]"></mat-paginator>
+  <mat-paginator #PromoPaginator="matPaginator" [pageSize]="2" [pageSizeOptions]="[3, 10, 25, 100]"></mat-paginator>
 
-  <!-- affichage des apprenants en attente d'une promo -->
-  <!-- <div>
-    
-  </div> -->
+  <!-- gestion des apprenants -->
   <div id="attente" *ngIf="isShownApprenantEnAttente" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
     <mat-card fxFlex="50">
       <mat-card-header>
-        <mat-card-title>{{isShownApprenantInPromo ? "Liste des apprenants de la promo" : "Ajout d'apprenants"}}</mat-card-title>
+        <mat-card-title>{{isShownApprenantInPromo ? "Liste des apprenants de la promo" : "Ajout d'apprenants"}}
+        </mat-card-title>
         <mat-card-subtitle> {{promoTitle}}: {{apprenantsInPromo.length}} apprenants</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div *ngIf="isShownApprenantInPromo">
           <div fxLayout="row" fxLayoutAlign="end">
-            <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" (click)="onAddApprenant()">
+            <button class="btn btn-button btn-outline-info" (click)="onAddApprenant()">
               <span class="material-icons">
                 add
               </span>
             </button>
-
-            <!-- <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" >{{btnLibelle}}</button> -->
           </div>
-
-          <!-- apprenants ayant rejoit la promo -->
-          <cdk-virtual-scroll-viewport  itemSize="10">
-          <div fxLayout="column" *cdkVirtualFor="let apprenantInPromo of ds">
-            <div fxLayout="row">
-              <div fxFlex="50">
-                <!-- <img class="img_avatar" src="{{ 'data:image/jpg;base64,' + apprenantInPromo.avatar }}" alt=""> -->
-                <!-- {{apprenantInPromo.email}} -->
-                {{apprenantInPromo.prenom}}
-                {{apprenantInPromo.nom}}
-              </div>
-
-              <!-- <cdk-virtual-scroll-viewport  itemSize="10">
-                <div *cdkVirtualFor="let apprenantInPromo of apprenantsInPromo" class="example-item">
-                  'gvg'</div>
-            </dk-virtual-scroll-viewport> -->
-
-              <div fxFlex="50" fxAlign="row" fxLayoutAlign="end">
-                <button type="button" class="btn btn-button btn-outline-warning"
-                  (click)="onDeleteApprenantOfPromo(apprenantInPromo.email)">
-                  Retirer
-                </button>
-              </div>
-
-            </div>
-
-            <mat-divider></mat-divider>
+          <!-- apprenants ayant rejoint la promo -->
+          
+          <!-- <div fxLayout="column">
+            <div fxLayout="column"> -->
+            <mat-table [dataSource]="dataSourceOne">
+              <ng-container matColumnDef="{{col}}" *ngFor="let col of 	displayedColumnsOne">
+                <mat-header-cell *matHeaderCellDef>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <div *ngIf="col !== 'avatar' && col !== 'action'">
+            {{element[col]}}
           </div>
-        </cdk-virtual-scroll-viewport>
+          <div *ngIf="col == 'avatar'">
+            <img class="img_avatar" src="{{ 'data:image/jpg;base64,' +  element[col] }}" alt="">
+      <!-- {{apprenantInPromo.email}} -->
+      </div>
+      <div *ngIf="col == 'action'">
+      <button type="button" class="btn btn-button btn-outline-danger"
+      (click)="onDeleteApprenantOfPromo(element.email)">
+      Retirer
+    </button>
+  </div>
+            </mat-cell>
+            </ng-container>
+           
+                <ng-container matColumnDef="loading">
+                    <mat-footer-cell *matFooterCellDef colspan="6">
+                        Chargement des données...
+                    </mat-footer-cell>            
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumnsOne"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumnsOne;"></mat-row>
+                <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':dataSourceOne!=null}"></mat-footer-row>
+                <!-- <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':(listData!=null && listData.admins.length==0)}"></mat-footer-row> -->
+            </mat-table>
+            <mat-paginator #StudentInPromoPaginator="matPaginator" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" ></mat-paginator>
+          
+        <!-- </div>
+        </div> -->
+      
+
         </div>
-
+          
         <!-- partie ajout d'apprenants -->
         <div *ngIf="!isShownApprenantInPromo">
-          <!-- <div fxLayout="row" fxLayoutAlign="start">
-            <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" (click)="onAddApprenant()">
-              Liste
-            </button>
-          </div> -->
           <div fxLayout="row" fxLayoutAlign="end">
             <button style="margin-bottom: 5px;" class="btn btn-button btn-outline-info" (click)="onChargeCvsFile()">
               <!-- Charger un fichier csv -->
               {{!isChargeCsvFile ? 'Charger un fichier csv' : 'Par emails'}}
             </button>
           </div>
-
           <div *ngIf="!isChargeCsvFile; else defaultField">
-          <mat-form-field class="example-chip-list" appearance="outline">
-            <mat-label>Emails</mat-label>
-            <mat-chip-list #chipList aria-label="Nouvel apprenants">
-              <mat-chip *ngFor="let email of emails" [selectable]="selectable" [removable]="removable"
-                (removed)="remove(email)">
-                {{email}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-              </mat-chip>
-              <input placeholder="Nouvel apprenant..." [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
-                (matChipInputTokenEnd)="add($event)">
-            </mat-chip-list>
-          </mat-form-field>
+            <mat-form-field class="example-chip-list" appearance="outline">
+              <mat-label>Emails</mat-label>
+              <mat-chip-list #chipList aria-label="Nouvel apprenants">
+                <mat-chip *ngFor="let email of emails" [selectable]="selectable" [removable]="removable"
+                  (removed)="remove(email)">
+                  {{email}}
+                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Nouvel apprenant..." [matChipInputFor]="chipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                  (matChipInputTokenEnd)="add($event)">
+              </mat-chip-list>
+            </mat-form-field>
+          </div>
+          <!-- chargement du fichier excel -->
+          <ng-template #defaultField>
+            <mat-form-field fxLayoutAlign="center">
+              <mat-label>Importer un fichier excel</mat-label>
+              <textarea matInput disabled cdkTextareaAutosize cdkAutosizeMaxCols="20" style="width: 100%;"></textarea>
+              <input type="file" (change)="onFileSelect($event)">
+              <div *ngIf="csvControl.errors && csvControl.errors.requiredFileType" style="color: red;"> Fichier invalide</div>
+            </mat-form-field>
+          </ng-template>
+          <div fxLayout="row" fxLayoutAlign="center">
+            <button style="margin-right: 5px;" class="btn btn-button btn-outline-info"
+              (click)="onSubmit()" [disabled]="(isChargeCsvFile && !csvControl.valid) || (!isChargeCsvFile && emails.length == 0)">Ajouter</button>
+            <button class="btn btn-button btn-outline-warning" style="margin-right: 5px;"
+              (click)="onCancelAdding()">Annuler</button>
+          </div>
         </div>
-
-        <!-- chargement du fichier excel -->
-        <ng-template #defaultField>
-          <mat-form-field fxLayoutAlign="center">
-            <mat-label>Importer un fichier excel</mat-label>
-            <textarea matInput disabled cdkTextareaAutosize cdkAutosizeMaxCols="20" style="width: 100%;"></textarea>
-            <input type="file" name="csvfile" (change)="onFileSelect($event)">
-            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
-        </mat-form-field>
-        </ng-template>
-
-        <div fxLayout="row" fxLayoutAlign="center">
-          <button style="margin-right: 5px;" class="btn btn-button btn-outline-info" (click)="onSubmit()">Ajouter</button>
-          <button class="btn btn-button btn-outline-warning" style="margin-right: 5px;" (click)="onCancelAdding()">Annuler</button>
-        </div>
-
-        </div>
-
       </mat-card-content>
     </mat-card>
 
+    <!-- apprenants en attente -->
     <mat-card fxFlex="50">
       <mat-card-header>
         <mat-card-title>Liste des apprenants en attente</mat-card-title>
         <mat-card-subtitle>{{promoTitle}} : {{apprenantsEnAttente.length}} apprenant(s) en attente</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <!-- <div fxFlex="50"> -->
         <div fxLayout="row" fxLayoutAlign="end">
-          <button *ngIf="apprenantsEnAttente.length!=0" style="margin-bottom: 5px;"
+          <button *ngIf="apprenantsEnAttente.length!=0"
             class="btn btn-button btn-outline-info" (click)="onRelanceAll()">Relancer
             toutes les invitations</button>
         </div>
-        <!-- </div> -->
-        <div fxLayout="column" *ngFor="let apprenantEnAttente of apprenantsEnAttente" style="margin-bottom: 5px;">
-          <div fxLayout="row">
-            <div fxFlex="50">
+        <div fxLayout="column">
+          <!-- <div fxLayout="row"> -->
+
+            <mat-table [dataSource]="dataSourceTwo" style="margin-top: 7px;">
+              <ng-container matColumnDef="email">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let element">{{(element.user.email)}}
+            </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="relance" style="float: right;">
+              <mat-header-cell *matHeaderCellDef></mat-header-cell>
+              <mat-cell *matCellDef="let element">
+              <button type="button" class="btn btn-button btn-outline-warning"
+              (click)="onRelanceOne(element.user.id)">
+              Relancer
+            </button>
+          </mat-cell>
+          </ng-container>
+                <ng-container matColumnDef="loading">
+                    <mat-footer-cell *matFooterCellDef colspan="6">
+                        Chargement des données...
+                    </mat-footer-cell>            
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumnsTwo"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumnsTwo;"></mat-row>
+                <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':dataSourceTwo!=null}"></mat-footer-row>
+                <!-- <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':(listData!=null && listData.admins.length==0)}"></mat-footer-row> -->
+            </mat-table>
+            <mat-paginator #WaitingStudentsPaginator="matPaginator" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" ></mat-paginator>
+          
+
+            <!-- <div fxFlex="50">
               {{apprenantEnAttente.user.email}}
             </div>
-
             <div fxFlex="50" fxAlign="row" fxLayoutAlign="end">
               <button type="button" class="btn btn-button btn-outline-warning"
                 (click)="onRelanceOne(apprenantEnAttente.user.id)">
                 Relancer
               </button>
-            </div>
+            </div> -->
 
-          </div>
-
-          <mat-divider></mat-divider>
+          <!-- </div> -->
         </div>
       </mat-card-content>
     </mat-card>
   </div>
 
-</div>

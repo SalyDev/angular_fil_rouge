@@ -118,6 +118,7 @@ export class SingleGcComponent implements OnInit {
   }
 
   onSubmitForm() {
+    
     // on recupere les competences du competenceControl(competences existantes ajoutées)
     this.transformToIri(this.competenceControl.value);
 
@@ -131,6 +132,8 @@ export class SingleGcComponent implements OnInit {
         "descriptif": "...",
         "etat": "incomplet",
       }
+      console.log(mycompetence);
+      // return;
       // variable permettant de tester si la compétence à ajouter dans competencesIri
       // n'existe pas deja dans le tableau
       let isContain = false;
@@ -143,10 +146,11 @@ export class SingleGcComponent implements OnInit {
         this.competencesIri.push(mycompetence);
       }
     });
+    // return;
 
     const body = {
-      'libelle': this.gc.libelle,
-      'descriptif': this.gc.descriptif,
+      'libelle': this.gcForm.get('libelle').value,
+      'descriptif': this.gcForm.get('descriptif').value,
       'competences': this.competencesIri
     }
     // on envoie les donnees vers le serveur

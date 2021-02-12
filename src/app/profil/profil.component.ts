@@ -131,13 +131,12 @@ export class ProfilComponent implements OnInit {
   }
 
 // afficher les users d'un profil
-  showUserOfProfil(id){
+  showUserOfProfil(id:number){
     this.isShowDetails = true;
     const url = this.profilUrl+'/'+id+'/users';
     this.userService.get(url).subscribe(
       (users) =>{
         this.users = users;
-        console.log(this.users);
         this.dataSourceTwo = new MatTableDataSource(users);
         this.dataSourceTwo.paginator = this.tableTwoPaginator;
       },

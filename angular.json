@@ -25,7 +25,7 @@
             ],
             "styles": [
               "src/theme.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles2.css",
               "src/styles.css"
             ],
             "scripts": [

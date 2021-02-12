@@ -61,9 +61,9 @@
 
                 <mat-form-field appearance="outline">
                     <mat-label>Date fin</mat-label>
-                    <input matInput formControlName="datefin">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                    <input matInput [matDatepicker]="picker1" formControlName="datefin">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
                     <mat-error *ngIf="promoForm.controls.datefin.errors && promoForm.controls.datefin.errors.required">
                         *Champs obligatoire
                     </mat-error>
@@ -94,7 +94,7 @@
                     *Type de fichier invalide</mat-error>
                 <div fxLayout="column" fxLayoutGap="10px">
 
-                    <button mat-raised-button color="primary" type="submit" style="margin-top: 10px;" [disabled]="!promoForm.valid">Créer</button>
+                    <button mat-raised-button color="primary" type="submit" style="margin-top: 10px;" [disabled]="!promoForm.valid">Modifier</button>
                     <button mat-raised-button color="accent" type="reset" (click)="onCanvelUpdate()">Annuler</button>
                 </div>
             </div>
