@@ -46,7 +46,7 @@ export class GcComponent implements OnInit {
       },
       () => {
         this.alertService.showProgressSpinner();
-        this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur')
+        this.alertService.showErrorMsg('Désolé, une erreur est survenue du serveur')
       }
       )
   }

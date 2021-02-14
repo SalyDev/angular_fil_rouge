@@ -49,7 +49,7 @@ export class SingleCompetenceComponent implements OnInit {
           'libelle': [this.competence.libelle, Validators.required],
           'descriptif': [this.competence.descriptif, Validators.required],
         },
-          () => this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur')
+          () => this.alertService.showErrorMsg('Désolé, une erreur est survenue du serveur')
         )
         // on ajoute deux formControls : actions et critere_evaluation pour chaque niveau
         if (this.niveaux.length != 0) {

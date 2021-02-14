@@ -49,7 +49,7 @@ export class CompetencesComponent implements OnInit {
       },
       () => {
         this.alertService.showProgressSpinner();
-        this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur')
+        this.alertService.showErrorMsg('Désolé, une erreur est survenue du serveur')
       }
     )
   }
@@ -66,7 +66,7 @@ export class CompetencesComponent implements OnInit {
       },
       () => {
         this.alertService.showProgressSpinner();
-        this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur');
+        this.alertService.showErrorMsg('Désolé, une erreur est survenue du serveur');
       }
     )
   }
