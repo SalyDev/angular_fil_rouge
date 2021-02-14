@@ -7,8 +7,9 @@
         </button>
         <mat-form-field class="search-form-field" floatLabel="never">
             <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
-            <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
-                (click)="onSearchClear()"></button>
+            <button mat-button matSuffix *ngIf="searchKey" (click)="onSearchClear()">
+                <mat-icon>cancel</mat-icon>
+            </button>
         </mat-form-field>
     </div>
     <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="10px">
@@ -31,7 +32,7 @@
                                 Compétences
                             </mat-panel-title>
                         </mat-expansion-panel-header>
-                        <div fxLayout="column">
+                        <div fxLayout="column" *ngIf="gc.competences.length > 0">
                             <mat-form-field *ngFor="let competence of gc.competences" fxFlex="50" appearance="outline">
                                 <mat-label></mat-label>
                                 <input matInput readonly value={{competence.libelle}}>
@@ -45,9 +46,9 @@
                 <button style="margin-right: 5px;" [routerLink]="[gc.id]"
                     class="btn btn-button btn-outline-info">Editer</button>
                 <button class="btn btn-button btn-outline-danger" style="margin-right: 5px;"
-                    (click)="onDeleteCompetence(gc.id)">Supprimer</button>
+                    (click)="onArchiveGc(gc.id)">Supprimer</button>
             </mat-card-actions>
         </mat-card>
     </div>
-    <mat-paginator [pageSize]="6"></mat-paginator>
+    <mat-paginator [pageSize]="6" showFirstLastButtons></mat-paginator>
 </div>

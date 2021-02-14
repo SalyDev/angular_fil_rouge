@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Router } from '@angular/router';
 import { GroupeCompetences } from 'src/app/modeles/GroupeCompetences';
+import { AlertService } from 'src/app/_services/alert.service';
 import { CustomValidatorsService } from 'src/app/_services/custom-validators.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
@@ -27,7 +28,7 @@ export class NewReferentielComponent implements OnInit {
   addOnBlur = true;
   separatorKeysCodes = [COMMA, ENTER];
   removable = true;
-  constructor(private userService: UserService, private formBuilder: FormBuilder, private customValidatorsService: CustomValidatorsService, private router: Router) { }
+  constructor(private userService: UserService, private formBuilder: FormBuilder, private customValidatorsService: CustomValidatorsService, private router: Router, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getGc();
@@ -58,7 +59,7 @@ export class NewReferentielComponent implements OnInit {
     })
   }
 
-  remove(element, tableau) {
+  remove(element:any, tableau: any[]) {
     this.userService.removeFirst(tableau, element);
   }
 
@@ -70,7 +71,7 @@ export class NewReferentielComponent implements OnInit {
     this.userService.addChip(event, this.critereAdmissionList);
   }
 
-  onFileSelect(event) {
+  onFileSelect(event: any) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.referentielForm.get('programme').setValue(file);
@@ -110,10 +111,14 @@ export class NewReferentielComponent implements OnInit {
 
     // envoie des donnees vers le serveur
     this.userService.add(this.referentielUrl, formdata).subscribe(
-      (sucess) => {
+      () => {
         this.router.navigate(['default/referentiels']);
+        this.alertService.showMsg('Référentiel ajouté avec succès')
       },
-      (error) => console.log(error)
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
+      }
     );
   }
 

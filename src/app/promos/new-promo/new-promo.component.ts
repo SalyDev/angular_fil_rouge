@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import { Referentiel } from 'src/app/modeles/Referentiel';
 import { Router } from '@angular/router';
 import { CustomValidatorsService } from 'src/app/_services/custom-validators.service';
+import { DateAdapter } from '@angular/material/core';
+import { AlertService } from 'src/app/_services/alert.service';
 
 
 
@@ -18,11 +20,16 @@ export class NewPromoComponent implements OnInit {
   promoForm: FormGroup;
   referentiels: Referentiel[] = [];
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, private customValidatorsService: CustomValidatorsService) { }
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, private customValidatorsService: CustomValidatorsService,private dateAdapter: DateAdapter<any>, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.initForm();
     this.getReferentiels();
+    this.setFrench();
+  }
+
+  setFrench(){
+    this.dateAdapter.setLocale('fr');
   }
 
   initForm() {
@@ -34,8 +41,8 @@ export class NewPromoComponent implements OnInit {
       'lieu': '',
       'referenceagate': '',
       'choixdefabrique': ['Sonatel Academy', Validators.required],
-      'datedebut': [new Date, Validators.required],
-      'datefin': [new Date, Validators.required],
+      'debut': [new Date, Validators.required],
+      'fin': [new Date, Validators.required],
       'referentiel': ['', Validators.required],
     })
   }
@@ -46,7 +53,6 @@ export class NewPromoComponent implements OnInit {
 
   // selection de l'avatar de la promo
   onFileSelect(event: any) {
-
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.promoForm.get('avatar').setValue(file);
@@ -61,21 +67,22 @@ export class NewPromoComponent implements OnInit {
   onSubmitForm() {
     const formData = new FormData();
     const promoUrl = environment.apiUrl + '/admin/promos';
-    const keys = ["titre", "lieu", "referenceagate", "langue", "description", "avatar", "choixdefabrique", "referentiel"];
+    const keys = ["titre", "lieu", "referenceagate", "langue", "description", "avatar", "choixdefabrique", "referentiel", "debut", "fin"];
     keys.forEach((valeur) => {
       formData.append(valeur, this.promoForm.get(valeur).value);
     })
 
-    // on fait corresponndre la clé 'groupes' de formData a la chaine apprenants qui contiennent 
+    // on fait corresponnre la clé 'groupes' de formData a la chaine apprenants qui contiennent 
     // la liste des mails des apprenants 
-
     this.userService.add(promoUrl, formData).subscribe(
-      data => {
+      () => {
+        this.alertService.showProgressSpinner();
+        this.alertService.showMsg('Promo ajoutée avec succès');
         this.router.navigate(['default/promos'])
       },
-      error => {
-        console.log(error);
-        // this.error = error.error.detail;
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
         ;
       }
     );
@@ -94,7 +101,8 @@ export class NewPromoComponent implements OnInit {
         this.referentiels = referentiels;
       },
       (error) => {
-        console.log(error);
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
       }
     )
   }

@@ -5,6 +5,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Competence } from 'src/app/modeles/Competence';
 import { GroupeCompetences } from 'src/app/modeles/GroupeCompetences';
+import { AlertService } from 'src/app/_services/alert.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -15,7 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SingleGcComponent implements OnInit {
 
-  constructor(private userService: UserService, private activatedRouter: ActivatedRoute, private formBuilder: FormBuilder, private router: Router) { }
+  constructor(private userService: UserService, private activatedRouter: ActivatedRoute, private formBuilder: FormBuilder, private router: Router, private alertService: AlertService) { }
   private id = this.activatedRouter.snapshot.params['id'];
   gcUrl = environment.apiUrl + '/admin/groupe_competences/' + this.id;
   gcForm: FormGroup;
@@ -28,6 +29,7 @@ export class SingleGcComponent implements OnInit {
   isAddingNewCompetence: boolean = false;
   existingCompetences: Competence[] = [];
   competencesIri: any[] = [];
+  isNotFound: boolean = false;
 
   // chips new competences
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -44,7 +46,7 @@ export class SingleGcComponent implements OnInit {
         this.competencesOfGc = gc.competences;
         this.gcForm = this.formBuilder.group({
           'libelle': [gc.libelle, Validators.required],
-          'descriptif': [gc.descriptif, Validators.required],
+          'descriptif': [gc.descriptif],
           'competences': ['', Validators.required]
         })
         const competenceUrl = environment.apiUrl + '/admin/competences';
@@ -64,8 +66,8 @@ export class SingleGcComponent implements OnInit {
           }
         )
       },
-      error => console.log(error)
-    )
+      () => this.isNotFound = true
+    );
   }
 
   // fonction pour la suppression d'une competence chips
@@ -132,8 +134,6 @@ export class SingleGcComponent implements OnInit {
         "descriptif": "...",
         "etat": "incomplet",
       }
-      console.log(mycompetence);
-      // return;
       // variable permettant de tester si la compétence à ajouter dans competencesIri
       // n'existe pas deja dans le tableau
       let isContain = false;
@@ -146,8 +146,10 @@ export class SingleGcComponent implements OnInit {
         this.competencesIri.push(mycompetence);
       }
     });
-    // return;
-
+    if(this.competencesIri.length==0){
+      this.alertService.showErrorMsg('Donner au moins une compétence');
+      return;
+    }
     const body = {
       'libelle': this.gcForm.get('libelle').value,
       'descriptif': this.gcForm.get('descriptif').value,
@@ -155,11 +157,14 @@ export class SingleGcComponent implements OnInit {
     }
     // on envoie les donnees vers le serveur
     this.userService.update(this.gcUrl, body).subscribe(
-      (sucess) => {
-        console.log(sucess)
+      () => {
         this.router.navigate(['default/groupe_competences']);
+        this.alertService.showMsg('Groupe de compétences modifié avec succès');
       },
-      (error) => console.log(error)
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
+      }
     )
   }
 

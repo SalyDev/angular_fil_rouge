@@ -63,7 +63,7 @@ export class AuthService {
     // let actualUserInfos:any[] = [];
     // on decode le token
     const decoded_token = this.helper.decodeToken(actualUser.token);
-
+    console.log(decoded_token);
     const email = decoded_token['username'];
     const url = environment.apiUrl+'/admin/user/'+email;
     return this.userService.view(url);

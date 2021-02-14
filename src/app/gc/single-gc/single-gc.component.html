@@ -1,80 +1,82 @@
 <div fxLayout="row" fxLayoutAlign="center center">
-    <mat-card fxLayout="column" fxLayoutAlign="center" fxFlex="55" fxFlex.lt-sm="100">
-        <form [formGroup]="gcForm" *ngIf="gcForm" fxLayoutAlign="stretch" fxLayout="column" fxLayoutGap="15px" (ngSubmit)="onSubmitForm()">
-          <mat-form-field  appearance="outline">
-            <mat-label>Libellé</mat-label>
-            <input matInput formControlName="libelle">
-            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
-          </mat-form-field>
-          <mat-form-field  appearance="outline">
-            <mat-label>Descriptif</mat-label>
-            <textarea cdkTextareaAutosize cdkAutosizeMinRows="3" matInput formControlName="descriptif"></textarea>
-            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
-          </mat-form-field>
-          <mat-form-field  appearance="outline">
-            <mat-label>Competences</mat-label>
-            <mat-chip-list #chipList>
-              <mat-chip *ngFor="let competence of competencesOfGc" [selectable]="selectable" [removable]="removable"
-                (removed)="removeCompetenceOfGc(competence)">
-                {{competence.libelle}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+  <mat-card fxLayout="column" fxLayoutAlign="center" fxFlex="55" fxFlex.lt-sm="100">
+    <form [formGroup]="gcForm" *ngIf="gcForm" fxLayoutAlign="stretch" fxLayout="column" fxLayoutGap="15px"
+      (ngSubmit)="onSubmitForm()">
+      <mat-form-field appearance="outline">
+        <mat-label>Libellé</mat-label>
+        <input matInput formControlName="libelle">
+        <mat-error *ngIf="gcForm.controls.libelle.errors && gcForm.controls.libelle.errors.required">Libellé Obligatoire
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Descriptif</mat-label>
+        <textarea cdkTextareaAutosize cdkAutosizeMinRows="3" matInput formControlName="descriptif"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Competences</mat-label>
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let competence of competencesOfGc" [selectable]="selectable" [removable]="removable"
+            (removed)="removeCompetenceOfGc(competence)">
+            {{competence.libelle}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="isAddingExistingCompetence">
+        <mat-label>Ajout de compétences existantes</mat-label>
+        <mat-select [formControl]="competenceControl" multiple>
+
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip *ngFor="let competence  of competenceControl.value" [removable]="true"
+                (removed)="remove(competence, competenceControl.value)">
+                {{ competence.libelle }}
+                <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
             </mat-chip-list>
-            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
-          </mat-form-field>
+          </mat-select-trigger>
+          <mat-option *ngFor="let existingCompetence of existingCompetences" [value]="existingCompetence">
+            {{existingCompetence.libelle}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-          <mat-form-field *ngIf="isAddingExistingCompetence">
-            <mat-label>Ajout de compétences existantes</mat-label>
-            <mat-select [formControl]="competenceControl" multiple>
-    
-              <mat-select-trigger>
-                <mat-chip-list>
-                  <mat-chip *ngFor="let competence  of competenceControl.value" [removable]="true"
-                    (removed)="remove(competence, competenceControl.value)">
-                    {{ competence.libelle }}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                  </mat-chip>
-                </mat-chip-list>
-              </mat-select-trigger>
-    
-              <mat-option *ngFor="let existingCompetence of existingCompetences" [value]="existingCompetence">
-                {{existingCompetence.libelle}}</mat-option>
-    
-            </mat-select>
-          </mat-form-field>
+      <mat-form-field class="example-chip-list" *ngIf="isAddingNewCompetence">
+        <mat-label>Nouvelles Compétences</mat-label>
+        <mat-chip-list #chipList aria-label="Fruit selection">
+          <mat-chip *ngFor="let newCompetence of newCompetences" [selectable]="selectable" [removable]="removable"
+            (removed)="remove(newCompetence, newCompetences)">
+            {{newCompetence}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="New competence..." [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+            (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+      </mat-form-field>
 
-          <mat-form-field class="example-chip-list" *ngIf="isAddingNewCompetence">
-            <mat-label>Nouvelles Compétences</mat-label>
-            <mat-chip-list #chipList aria-label="Fruit selection">
-              <mat-chip *ngFor="let newCompetence of newCompetences" [selectable]="selectable" [removable]="removable"
-                (removed)="remove(newCompetence, newCompetences)">
-                {{newCompetence}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-              </mat-chip>
-              <input placeholder="New competence..." [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
-                (matChipInputTokenEnd)="add($event)">
-            </mat-chip-list>
-          </mat-form-field>
-    
-          <div fxLayout="row" fxLayoutAlign="center">
-            <button type="button" class="btn btn-button btn-outline-info" style="margin-right:5px ;"
-              (click)="isAddingExistingCompetences()">
-              Compétences existantes
-              <span class="material-icons" style="display: block;  float: right;">
-                add
-              </span>
-            </button>
-    
-            <button type="button" class="btn btn-button btn-outline-info" (click)="isAddingNewCompetences()">
-              Nouvelles compétences
-              <span class="material-icons" style="display: block;  float: right;">
-                add
-              </span>
-            </button>
-          </div>
-          <button mat-raised-button color="primary" type="submit">Modifier</button>
-          <button mat-raised-button color="accent" type="reset" (click)="onCancelUpdate()">Annuler</button>
-        </form>
-      </mat-card>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <button type="button" class="btn btn-button btn-outline-info" style="margin-right:5px ;"
+          (click)="isAddingExistingCompetences()">
+          Compétences existantes
+          <span class="material-icons" style="display: block;  float: right;">
+            add
+          </span>
+        </button>
+
+        <button type="button" class="btn btn-button btn-outline-info" (click)="isAddingNewCompetences()">
+          Nouvelles compétences
+          <span class="material-icons" style="display: block;  float: right;">
+            add
+          </span>
+        </button>
+      </div>
+      <button mat-raised-button color="primary" type="submit">Modifier</button>
+      <button mat-raised-button color="accent" type="reset" (click)="onCancelUpdate()">Annuler</button>
+    </form>
+    <div *ngIf="isNotFound">
+      <div style="color: red;">404</div>
+      Page Introuvable
+    </div>
+  </mat-card>
 </div>

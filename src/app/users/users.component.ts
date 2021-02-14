@@ -30,11 +30,7 @@ export class UsersComponent implements OnInit {
     this.getUsers();
   }
 
-
-
   getUsers(){
-   
-    
     return this.userService.get(this.userUrl).subscribe(users => {
       this.authService.getUserInfos().subscribe(
         user => {
@@ -45,6 +41,9 @@ export class UsersComponent implements OnInit {
           this.listData = new MatTableDataSource(this.users);
           this.listData.sort = this.sort;
           this.listData.paginator = this.paginator;
+        },
+        () => {
+          this.alertService.showErrorMsg('Désolé, une erreur est survenue du serveur');
         }
       );
     });
@@ -52,8 +51,7 @@ export class UsersComponent implements OnInit {
 
   onArchiveUser(id:number){
       const url = this.userUrl+'/'+id;
-
-      this.alertService.confirmDeleting('Etes-vous sur de supprimer cet utilisateur?').then((result) => {
+      this.alertService.confirmDeleting('Etes-vous sûr de supprimer cet utilisateur?').then((result) => {
         if (result.isConfirmed) {
           this.userService.archive(url).subscribe(() => this.getUsers());
           Swal.fire(

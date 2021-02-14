@@ -6,8 +6,9 @@
   </button>
   <mat-form-field class="search-form-field" floatLabel="never">
     <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
-    <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
-      (click)="onSearchClear()"></button>
+    <button mat-button matSuffix *ngIf="searchKey" (click)="onSearchClear()">
+      <mat-icon>cancel</mat-icon>
+    </button>
   </mat-form-field>
 </div>
 
@@ -22,10 +23,10 @@
             <div class="btn-edit" *ngIf="col === '$$edit'; spanHeader">
               <!-- <button (click)="element.isEdit = !element.isEdit">Edit</button> -->
               <button (click)="element.isEdit = !element.isEdit; onInitInput()" style="margin-right: 5px;"
-                class="btn btn-button btn-outline-info">Modifier</button>
+                class="btn btn-button btn-outline-info" [disabled]="element.libelle==currentUserProfil">Modifier</button>
               <button (click)="showUserOfProfil(element.id)" style="margin-right: 5px;"
                 class="btn btn-button btn-outline-warning">Detail</button>
-              <button (click)="onArchiveProfil(element.id)" class="btn btn-button btn-outline-danger">Supprimer</button>
+              <button (click)="onArchiveProfil(element.id)" class="btn btn-button btn-outline-danger" [disabled]="element.libelle==currentUserProfil">Supprimer</button>
 
             </div>
             <span #spanHeader>
@@ -81,7 +82,7 @@
           [disabled]="!profilForm.valid">Valider</button>
         <!-- <button mat-raised-button color="primary" type="submit" (click)="onSubmitForm()">Créer</button> -->
         <button type="button" color="accent" type="reset" class="btn btn-button btn-outline-warning"
-          (click)="onCancelAdding()">Annuler</button>
+          (click)="onCancelAdding()">Fermer</button>
       </form>
       <!-- formulaire d'ajout -->
     </div>
@@ -101,10 +102,6 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let user">{{user.prenom}} {{user.nom}}</mat-cell>
       </ng-container>
-      <!-- <ng-container matColumnDef="email">
-        <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-        <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
-      </ng-container> -->
       <mat-header-row *matHeaderRowDef="displayedColumnsTwo"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumnsTwo;"></mat-row>    
     </mat-table>

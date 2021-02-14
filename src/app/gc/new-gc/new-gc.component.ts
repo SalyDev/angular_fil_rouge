@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Router } from '@angular/router';
 import { Competence } from 'src/app/modeles/Competence';
+import { AlertService } from 'src/app/_services/alert.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -29,7 +30,7 @@ export class NewGcComponent implements OnInit {
   addOnBlur = true;
   // chips new competences
 
-  constructor(private userService: UserService, private formBuilder: FormBuilder, private router: Router) { }
+  constructor(private userService: UserService, private formBuilder: FormBuilder, private router: Router, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getCompetences();
@@ -39,7 +40,7 @@ export class NewGcComponent implements OnInit {
   initForm() {
     this.gcForm = this.formBuilder.group({
       'libelle': ['', Validators.required],
-      'descriptif': ['', Validators.required]
+      'descriptif': ['']
     })
   }
 
@@ -57,10 +58,10 @@ export class NewGcComponent implements OnInit {
     this.userService.get(competenceUrl).subscribe(
       (competences) => {
         this.existingCompetences = competences;
-      }
+      },
+      () => this.alertService.showErrorMsg('Une erreur est survenue du serveur')
     )
   }
-
 
   // fonction pour la suppression d'une competence existante(chips)
   onCompetenceRemoved(competence: string) {
@@ -69,10 +70,9 @@ export class NewGcComponent implements OnInit {
     this.competenceControl.setValue(addingCompetences); // change detection
   }
 
-
-    add(event: MatChipInputEvent){
-      this.userService.addChip(event, this.newCompetences);
-    }
+  add(event: MatChipInputEvent) {
+    this.userService.addChip(event, this.newCompetences);
+  }
 
   remove(competence: string): void {
     this.userService.removeFirst(this.newCompetences, competence);
@@ -95,7 +95,7 @@ export class NewGcComponent implements OnInit {
         "descriptif": "...",
         "etat": "incomplet",
       }
-     
+
       // variable permettant de tester si la compétence à ajouter dans competencesIri
       // n'existe pas deja dans le tableau
       let isContain = false;
@@ -108,11 +108,10 @@ export class NewGcComponent implements OnInit {
         this.competencesIri.push(mycompetence);
       }
     });
-    if(this.competencesIri.length==0){
-      alert('Donner au moins une compétence');
+    if (this.competencesIri.length == 0) {
+      this.alertService.showErrorMsg('Donner au moins une compétence');
       return;
     }
-
     const body = {
       'libelle': this.gcForm.get('libelle').value,
       'descriptif': this.gcForm.get('descriptif').value,
@@ -120,16 +119,19 @@ export class NewGcComponent implements OnInit {
     }
     //  on envoie les données au serveur
     this.userService.add(this.gcUrl, body).subscribe(
-      (gc) => {
-        console.log(gc);
+      () => {
         this.router.navigate(['default/groupe_competences']);
+        this.alertService.showMsg('Groupe de compétences ajouté avec succès');
       },
-      (error) => console.log(error)
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
+      }
     )
   }
 
   // fonction pour l'annulation de l'ajout
-  onCancelAdd(){
+  onCancelAdd() {
     this.router.navigate(['default/groupe_competences']);
   }
 

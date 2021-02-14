@@ -1,7 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="center center">
   <mat-card fxLayout="column" fxLayoutAlign="center" fxFlex="55" fxFlex.lt-sm="100">
     <form [formGroup]="gcForm" (ngSubmit)="onSubmitForm()" fxLayoutAlign="stretch" fxLayout="column" fxLayoutGap="9px">
-      <!-- <mat-toolbar fxLayoutAlign="fetch">Creation de groupe de competences</mat-toolbar> -->
       <mat-form-field appearance="outline">
         <mat-label>Libellé</mat-label>
         <input matInput formControlName="libelle">
@@ -11,15 +10,10 @@
       <mat-form-field appearance="outline">
         <mat-label>Descriptif</mat-label>
         <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" formControlName="descriptif"></textarea>
-        <mat-error *ngIf="gcForm.controls.descriptif.errors && gcForm.controls.descriptif.errors.required">*Champs
-          Obligatoire</mat-error>
       </mat-form-field>
-
-
       <mat-form-field *ngIf="isAddingExistingCompetence">
         <mat-label>Ajout de compétences existantes</mat-label>
         <mat-select [formControl]="competenceControl" multiple>
-
           <mat-select-trigger>
             <mat-chip-list>
               <mat-chip *ngFor="let competence  of competenceControl.value" [removable]="true"
@@ -29,10 +23,8 @@
               </mat-chip>
             </mat-chip-list>
           </mat-select-trigger>
-
           <mat-option *ngFor="let existingCompetence of existingCompetences" [value]="existingCompetence">
             {{existingCompetence.libelle}}</mat-option>
-
         </mat-select>
       </mat-form-field>
 
@@ -67,8 +59,9 @@
         </button>
       </div>
 
-      <button mat-raised-button color="primary" type="submit" [disabled]="!gcForm.valid">Créer</button>
+      <button mat-raised-button color="primary" type="submit">Créer</button>
       <button mat-raised-button color="accent" type="reset" (click)="onCancelAdd()">Annuler</button>
     </form>
   </mat-card>
 </div>
+

@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatRadioModule } from '@angular/material/radio';
+import { PipeModule } from '../pipes/pipe.module';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 
 @NgModule({
@@ -21,7 +23,11 @@ import { MatRadioModule } from '@angular/material/radio';
     FlexLayoutModule,
     ReactiveFormsModule,
     MatRadioModule,
+    PipeModule
   ],
-  providers: [DatePipe]
+  providers: [
+    DatePipe,
+  ]
+  
 })
 export class PromosModule { }

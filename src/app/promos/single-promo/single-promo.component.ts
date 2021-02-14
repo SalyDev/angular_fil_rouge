@@ -1,7 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Referentiel } from 'src/app/modeles/Referentiel';
+import { AlertService } from 'src/app/_services/alert.service';
 import { CustomValidatorsService } from 'src/app/_services/custom-validators.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
@@ -15,13 +18,19 @@ export class SinglePromoComponent implements OnInit {
   promoForm: FormGroup;
   referentiels: Referentiel[] = [];
   imgSource: any;
+  isNotFound : boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private customValidatorsService: CustomValidatorsService) { }
+  constructor(private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private customValidatorsService: CustomValidatorsService, private dateAdapter: DateAdapter<any>, private alertService: AlertService) { }
   url = environment.apiUrl + '/admin/promos/' + this.activatedRoute.snapshot.params['id'];
 
   ngOnInit(): void {
     this.initForm();
     this.getReferentiels();
+    this.setFrench();
+  }
+
+  setFrench(){
+    this.dateAdapter.setLocale('fr');
   }
 
   initForm() {
@@ -34,15 +43,14 @@ export class SinglePromoComponent implements OnInit {
           'lieu': [promo.lieu],
           'referenceagate': [promo.referenceagate],
           'choixdefabrique': [promo.choixdefabrique, Validators.required],
-          'datedebut': [promo.datedebut, Validators.required],
-          'datefin': [promo.datefin, Validators.required],
+          'debut': [new Date(promo.debut), Validators.required],
+          'fin': [new Date(promo.fin), Validators.required],
           'referentiel': [promo.referentiel.libelle, Validators.required],
         });
         this.imgSource = 'data:image/jpg;base64,' + promo.avatar;
       },
-      (error) => console.log(error)
+      () => this.isNotFound = true
     )
-
   }
 
   // on recupere les referentiels dans notre BD
@@ -53,12 +61,13 @@ export class SinglePromoComponent implements OnInit {
         this.referentiels = referentiels;
       },
       (error) => {
-        console.log(error);
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
       }
     )
   }
 
-  onFileSelect(event) {
+  onFileSelect(event: any) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.promoForm.addControl('avatar', this.formBuilder.control('', [this.customValidatorsService.requiredFileType(['jpg', 'jpeg', 'png'])]));
@@ -73,7 +82,7 @@ export class SinglePromoComponent implements OnInit {
 
   onSubmitForm() {
     const formData = new FormData();
-    const keys = ["titre", "lieu", "referenceagate", "langue", "description", "choixdefabrique", "referentiel"];
+    const keys = ["titre", "lieu", "referenceagate", "langue", "description", "choixdefabrique", "referentiel", "debut", "fin"];
     keys.forEach((valeur) => {
       formData.append(valeur, this.promoForm.get(valeur).value);
     })
@@ -81,17 +90,16 @@ export class SinglePromoComponent implements OnInit {
       formData.append('avatar', this.promoForm.get('avatar').value);
     }
     formData.append('_method', 'PUT');
-
     // on fait corresponndre la clé 'groupes' de formData a la chaine apprenants qui contiennent 
     // la liste des mails des apprenants 
-
     this.userService.add(this.url, formData).subscribe(
       () => {
+        this.alertService.showMsg('Promo modifiée avec succès');
         this.router.navigate(['default/promos'])
       },
       (error) => {
-        console.log(error);
-        // this.error = error.error.detail;
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
         ;
       }
     );

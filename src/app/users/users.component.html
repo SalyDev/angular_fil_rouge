@@ -1,61 +1,49 @@
 <div fxLayout="column">
-<div class="search-div">
-    <button aria-label="Close" routerLink="new" style="margin-right: 5px;" class="btn btn-button btn-outline-info">
-        <span class="material-icons" >
-            add
-        </span>
-    </button>
-    <mat-form-field class="search-form-field" floatLabel="never">
-        <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
-        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()"></button>
-    </mat-form-field>
-</div>
+    <div class="search-div">
+        <button aria-label="Close" routerLink="new" style="margin-right: 5px;" class="btn btn-button btn-outline-info">
+            <span class="material-icons">
+                add
+            </span>
+        </button>
+        <mat-form-field class="search-form-field" floatLabel="never">
+            <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
+            <button mat-button matSuffix *ngIf="searchKey" (click)="onSearchClear()">
+                <mat-icon>cancel</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
     <div fxLayout="column" style="width: 100%;">
-    <mat-table [dataSource]="listData" matSort>
-        <ng-container matColumnDef="prenom">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.prenom}}</mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="nom">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.nom}}</mat-cell>
-        </ng-container>
-        <!-- <ng-container matColumnDef="email">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.email}}</mat-cell>
-        </ng-container> -->
-        <!-- <ng-container matColumnDef="genre">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Genre</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.genre}}</mat-cell>
-        </ng-container> -->
-        <ng-container matColumnDef="profil">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Profil</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{(element.profil.libelle)}}</mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" fxLayout.lt-sm="column">
-                <button style="margin-right: 5px;" [routerLink]="[element.id]" class="btn btn-button btn-outline-info">Detail</button>
-                <button class="btn btn-button btn-outline-danger" (click)="onArchiveUser(element.id)" [disabled]="element.email==currentUserEmail" >Supprimer</button>
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="loading">
-            <mat-footer-cell *matFooterCellDef colspan="6">
-                Chargement des données...
-            </mat-footer-cell>            
-        </ng-container>
-        <!-- <ng-container matColumnDef="noData">
-            <mat-footer-cell *matFooterCellDef colspan="6">
-                Pas de données
-            </mat-footer-cell>            
-        </ng-container> -->
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':listData!=null}"></mat-footer-row>
-        <!-- <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':(listData!=null && listData.admins.length==0)}"></mat-footer-row> -->
-    </mat-table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="7" showFirstLastButtons></mat-paginator>
-  
-</div>
-
+        <mat-table [dataSource]="listData" matSort>
+            <ng-container matColumnDef="prenom">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.prenom}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="nom">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.nom}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="profil">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Profil</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{(element.profil.libelle)}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let element" fxLayout.lt-sm="column">
+                    <button style="margin-right: 5px;" [routerLink]="[element.id]"
+                        class="btn btn-button btn-outline-info">Detail</button>
+                    <button class="btn btn-button btn-outline-danger" (click)="onArchiveUser(element.id)"
+                        [disabled]="element.email==currentUserEmail">Supprimer</button>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="loading">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    Chargement des données...
+                </mat-footer-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':listData!=null}"></mat-footer-row>
+        </mat-table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="7" showFirstLastButtons></mat-paginator>
+    </div>
 </div>

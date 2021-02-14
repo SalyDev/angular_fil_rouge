@@ -10,7 +10,6 @@ import { AlertService } from '../_services/alert.service';
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { style } from '@angular/animations';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 
@@ -43,7 +42,11 @@ export class ReferentielComponent implements OnInit {
         this.listData.paginator = this.paginator;
         this.obs = this.listData.connect();
       },
-      error => console.log(error)
+      (error) => {
+        this.alertService.showProgressSpinner();
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
+      } 
     );
   }
 
@@ -56,14 +59,14 @@ export class ReferentielComponent implements OnInit {
     this.listData.filter = this.searchKey.trim().toLocaleLowerCase();
   }
 
-  archiveReferentiel(id) {
+  archiveReferentiel(id: number) {
     console.log(id);
     const url = environment.apiUrl + '/admin/referentiels/' + id;
-    this.alertService.confirmDeleting('Etes-vous sur de supprimer cet profil?').then((result) => {
+    this.alertService.confirmDeleting('Etes-vous sûr de supprimer cet référentiel?').then((result) => {
       if (result.isConfirmed) {
         this.userService.archive(url).subscribe(() => this.getReferentiels());
         Swal.fire(
-          'Profil archivé!',
+          'Référentiel archivé!',
         )
       }
     })
@@ -156,5 +159,4 @@ export class ReferentielComponent implements OnInit {
       }
     )
   }
-
 }

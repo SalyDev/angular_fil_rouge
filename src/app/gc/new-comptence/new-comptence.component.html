@@ -43,7 +43,6 @@
       <!-- groupe de competences -->
       <mat-form-field> Groupe de compétences
         <mat-select [formControl]="gcControl" multiple >
-        
           <mat-select-trigger>
             <mat-chip-list>
               <mat-chip *ngFor="let gc of gcControl.value"
@@ -53,9 +52,7 @@
               </mat-chip>
             </mat-chip-list>
           </mat-select-trigger>
-      
           <mat-option *ngFor="let gc of gcList" [value]="gc">{{gc}}</mat-option>
-      
         </mat-select>
       </mat-form-field>
       <!-- groupe de competences -->

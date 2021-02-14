@@ -8,7 +8,7 @@ import { Profilsortie } from '../modeles/Profilsortie';
 import { AlertService } from '../_services/alert.service';
 import { UserService } from '../_services/user.service';
 import Swal from 'sweetalert2'
-import { FormControl, FormGroup, NgForm, NgModel, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../modeles/User';
 
 @Component({
@@ -18,15 +18,12 @@ import { User } from '../modeles/User';
 })
 export class ProfilsortiesComponent implements OnInit {
 
-
-  // listData: MatTableDataSource<any>;
-  // displayedColumns: string[] = ['libelle', '$$edit'];
-  private profilsortieUrl = environment.apiUrl+'/admin/profilsorties';
-  profilsorties:Profilsortie[];
-  addNewPs:boolean;
-  psForm:FormGroup;
-  searchKey :string;
-  libelleUpdated:string;
+  private profilsortieUrl = environment.apiUrl + '/admin/profilsorties';
+  profilsorties: Profilsortie[];
+  addNewPs: boolean;
+  psForm: FormGroup;
+  searchKey: string;
+  libelleUpdated: string;
   apprenants: User[] = [];
   isShowDetails: boolean = false;
 
@@ -35,21 +32,20 @@ export class ProfilsortiesComponent implements OnInit {
   // pagination de la table des profils
   dataSourceOne: MatTableDataSource<Profilsortie[]>;
   displayedColumnsOne: string[] = ['libelle', '$$edit'];
-  @ViewChild('TableOnePaginator', {static: true}) tableOnePaginator: MatPaginator;
+  @ViewChild('TableOnePaginator', { static: true }) tableOnePaginator: MatPaginator;
 
   // pagination de lat table des users
   dataSourceTwo: MatTableDataSource<User[]>;
-  displayedColumnsTwo: string[] = ['avatar','nom'];
-  @ViewChild('TableTwoPaginator', {static: true}) tableTwoPaginator: MatPaginator;
+  displayedColumnsTwo: string[] = ['avatar', 'nom'];
+  @ViewChild('TableTwoPaginator', { static: true }) tableTwoPaginator: MatPaginator;
 
-  constructor(private userService:UserService, public activatedRoute:ActivatedRoute,private alertService: AlertService) { }
+  constructor(private userService: UserService, public activatedRoute: ActivatedRoute, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getProfilsorties();
   }
 
-  getProfilsorties()
-  {
+  getProfilsorties() {
     return this.userService.get(this.profilsortieUrl).subscribe(
       profilsorties => {
         this.profilsorties = profilsorties;
@@ -58,11 +54,11 @@ export class ProfilsortiesComponent implements OnInit {
         this.dataSourceOne.paginator = this.tableOnePaginator;
       },
       error => console.log(error),
-  );
+    );
   }
 
-  onArchivePs(id:number){
-    const url = this.profilsortieUrl+'/'+id;
+  onArchivePs(id: number) {
+    const url = this.profilsortieUrl + '/' + id;
     this.alertService.confirmDeleting('Êtes-vous sur de supprimer ce profil de sortie?').then((result) => {
       if (result.isConfirmed) {
         this.userService.archive(url).subscribe(() => this.getProfilsorties());
@@ -74,71 +70,76 @@ export class ProfilsortiesComponent implements OnInit {
     this.getProfilsorties();
   }
 
-  onSearchClear(){
+  onSearchClear() {
     this.searchKey = "";
     this.applyFilter();
   }
 
-  applyFilter(){
+  applyFilter() {
     this.dataSourceOne.filter = this.searchKey.trim().toLocaleLowerCase();
   }
 
   // on reiniliatise à undefined la valeur du libelleUpdated lorsqu'on clik sur le edit button
-  onInitInput(){
+  onInitInput() {
     this.libelleUpdated = undefined;
   }
 
-  onEdit(id)
-  {
+  onEdit(id: number) {
     // si la valeur du libellé a changé
-    const url = this.profilsortieUrl+'/'+id;
-    if(this.libelleUpdated){
+    const url = this.profilsortieUrl + '/' + id;
+    if (this.libelleUpdated) {
       this.userService.update(url, {
-        "libelle":this.libelleUpdated
-        })
-        .subscribe(successmsg=>{
-          console.log(successmsg);
-          this.getProfilsorties();
-      },
-      error => console.log(error)
-      );
+        "libelle": this.libelleUpdated
+      })
+        .subscribe(
+          () => {
+            this.getProfilsorties();
+            this.alertService.showMsg('Profil de sortie modifié avec succès');
+          },
+          (error) => {
+            const ereur = this.userService.handleError(error);
+            this.alertService.showErrorMsg(ereur);
+          }
+        );
     }
   }
 
   // detection de modification du libellé
-  changeLibelle(event){
+  changeLibelle(event: any) {
     this.libelleUpdated = event.target.value;
   }
 
-  addPs(){
+  addPs() {
     this.addNewPs = true;
     this.psForm = new FormGroup({
       "libelle": new FormControl('', Validators.required)
     })
   }
 
-   onSubmitForm(){
+  onSubmitForm() {
     const body = {
-              "libelle": this.psForm.get('libelle').value
-              };
-    this.userService.add(this.profilsortieUrl,body).subscribe(
-      successResponse => {
+      "libelle": this.psForm.get('libelle').value
+    };
+    this.userService.add(this.profilsortieUrl, body).subscribe(
+      () => {
         this.getProfilsorties();
-        console.log(successResponse)
+        this.alertService.showMsg('Profil de sortie ajouté avec succès');
       },
-      error => console.log(error)
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
+      }
     );
   }
 
-  onCancelAdding(){
+  onCancelAdding() {
     this.addNewPs = false;
   }
 
-
   // la liste des apprenants associés à un profil de sortie
-  showApprenantsOfPs(id){
+  showApprenantsOfPs(id: number) {
     this.isShowDetails = true;
-    const url = this.profilsortieUrl+'/'+id+'/apprenants';
+    const url = this.profilsortieUrl + '/' + id + '/apprenants';
     this.userService.get(url).subscribe(
       apprenants => {
         this.apprenants = apprenants;
@@ -146,9 +147,9 @@ export class ProfilsortiesComponent implements OnInit {
         this.dataSourceTwo.paginator = this.tableTwoPaginator;
       }
     )
-    }
+  }
 
-    closeDetails(){
-      this.isShowDetails = false;
-    }
+  closeDetails() {
+    this.isShowDetails = false;
+  }
 }

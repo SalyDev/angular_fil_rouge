@@ -20,9 +20,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { FileInputConfig, MaterialFileInputModule } from 'ngx-material-file-input';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 
 
 const importations = [
@@ -48,8 +46,7 @@ const importations = [
     MatRadioModule,
     MatChipsModule,
     MatAutocompleteModule,
-    MaterialFileInputModule,
-    ScrollingModule
+    MatProgressSpinnerModule
 ];
 
 

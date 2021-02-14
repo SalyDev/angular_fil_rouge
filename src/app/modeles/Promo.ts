@@ -8,7 +8,7 @@ export class Promo{
     choixdefabrique:string;
     description:string;
     avatar:Blob;
-    datedebut:Date;
-    datefin:Date;
+    debut:string;
+    fin:string;
     referentiel: Referentiel
 }

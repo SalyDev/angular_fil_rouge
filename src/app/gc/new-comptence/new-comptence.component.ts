@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GroupeCompetences } from 'src/app/modeles/GroupeCompetences';
+import { AlertService } from 'src/app/_services/alert.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -19,7 +20,7 @@ export class NewComptenceComponent implements OnInit {
   gcTab=[];
   competenceUrl = environment.apiUrl+'/admin/competences';
   groupeCompetences:GroupeCompetences[]=[];
-  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getGc();
@@ -37,7 +38,6 @@ export class NewComptenceComponent implements OnInit {
   });
   
 }
-
 
   onSubmitForm() {
     (this.gcControl.value).forEach(element => {
@@ -65,12 +65,13 @@ export class NewComptenceComponent implements OnInit {
 
     // envoie des donnees vers le serveur
     this.userService.add(this.competenceUrl, body).subscribe(
-      success => {
-        console.log(success);
+      () => {
         this.router.navigate(['default/competences']);
+        this.alertService.showMsg('Compétence ajoutée avec succès');
       },
-      error => {
-        console.log(error.error.violations[0].message);
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
       }
     )
   }
@@ -96,7 +97,6 @@ export class NewComptenceComponent implements OnInit {
   }
 
   gcList: string[] = this.gcLibelles;
-
     // on recupere l'ensemble des groupe de competences
     getGc(){
       const urlGc = environment.apiUrl+'/admin/groupe_competences';
@@ -109,5 +109,4 @@ export class NewComptenceComponent implements OnInit {
         }
       )
     }
-
 }

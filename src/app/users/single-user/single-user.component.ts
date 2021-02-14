@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profilsortie } from 'src/app/modeles/Profilsortie';
+import { AlertService } from 'src/app/_services/alert.service';
 import { CustomValidatorsService } from 'src/app/_services/custom-validators.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../../modeles/User';
@@ -19,9 +20,9 @@ export class SingleUserComponent implements OnInit {
   private userUrl = "url";
   public tab: any;
   imgSource: any;
-  isSelectedValidFile: boolean = true;
   ps: Profilsortie[] = [];
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router, private customValidatorsService: CustomValidatorsService) { }
+  isNotFound: boolean = false;
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router, private customValidatorsService: CustomValidatorsService, private alertService: AlertService) { }
   // on recupere l'id contenu dans l'url
   private id = this.activatedRoute.snapshot.params['id'];
 
@@ -34,7 +35,6 @@ export class SingleUserComponent implements OnInit {
 
     const userUrl = environment.apiUrl + "/users/" + this.id;
     this.userService.view(userUrl).subscribe(
-
       user => {
         this.user = user;
         let itemPs = {
@@ -60,24 +60,16 @@ export class SingleUserComponent implements OnInit {
           "genre": [user.genre, Validators.required]
         });
         this.imgSource = 'data:image/jpg;base64,' + user.avatar;
-      }
+      },
+      () => this.isNotFound = true
     );
   }
 
   onFileSelect(event: any) {
-
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
-
-      if (file.type && file.type.indexOf('image') === -1) {
-        this.isSelectedValidFile = false;
-        return;
-      }
-      this.userForm.addControl('avatar', this.formBuilder.control('', [Validators.required]));
-      this.isSelectedValidFile = true;
+      this.userForm.addControl('avatar', this.formBuilder.control('', [Validators.required, this.customValidatorsService.requiredFileType(['jpg', 'jpeg', 'png'])]));
       this.userForm.get('avatar').setValue(file);
-
-
       const reader = new FileReader();
       reader.addEventListener('load', (event) => {
         this.imgSource = event.target.result;
@@ -101,11 +93,13 @@ export class SingleUserComponent implements OnInit {
     }
     formData.append('_method', 'PUT');
     this.userService.add(this.userUrl, formData).subscribe(
-      data => {
+      () => {
         this.router.navigate(['default/users']);
+        this.alertService.showMsg('Utilisateur modifié avec succès');
       },
-      error => {
-        console.log(error);
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
       }
     );
   }
@@ -117,9 +111,6 @@ export class SingleUserComponent implements OnInit {
       ps => {
         this.ps = ps;
       },
-      error => {
-        console.log(error);
-      }
     )
   }
 

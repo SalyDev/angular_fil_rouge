@@ -1,26 +1,22 @@
 <div fxLayout="row" fxLayoutAlign="center">
-  <mat-card fxFlex="75" fxFlex.lt-sm="100" fxLayout="row" fxLayoutAlign="end center">
-    <!-- <mat-toolbar fxLayoutAlign="center center">Nouvel utilisateur</mat-toolbar> -->
-    <form fxFlex="100" fxLayoutGap="10px"  fxLayout="column" [formGroup]="userForm" *ngIf="userForm"
+  <mat-card fxFlex="75" fxFlex.lt-sm="100" fxLayout="row">
+    <form fxFlex="100" fxLayoutGap="10px" fxLayout="column" [formGroup]="userForm" *ngIf="userForm"
       (ngSubmit)="onSubmitForm()">
-
       <div fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
-
         <div fxFlex="20" fxLayoutAlign="center center">
           <!-- affichage de l'avatar -->
           <img class="view-avatar-promo" [src]="imgSource" alt="">
         </div>
-
         <div fxFlex="40" fxLayout="column">
-          <mat-form-field  appearance="outline">
+          <mat-form-field appearance="outline">
             <mat-label>Prénom</mat-label>
             <input matInput formControlName="prenom">
-            <mat-error *ngIf="form.email.errors && form.email.errors.required">Prénom Obligatoire</mat-error> 
+            <mat-error *ngIf="form.email.errors && form.email.errors.required">Prénom Obligatoire</mat-error>
           </mat-form-field>
-          <mat-form-field  appearance="outline">
+          <mat-form-field appearance="outline">
             <mat-label>Nom</mat-label>
             <input matInput formControlName="nom">
-            <mat-error *ngIf="form.email.errors && form.email.errors.required">Nom Obligatoire</mat-error> 
+            <mat-error *ngIf="form.email.errors && form.email.errors.required">Nom Obligatoire</mat-error>
           </mat-form-field>
           <!-- profil sortie -->
           <mat-form-field appearance="outline" *ngIf="user.roles[0]==='ROLE_APPRENANT'">
@@ -32,10 +28,10 @@
               </p>
             </mat-select>
           </mat-form-field>
-          <mat-form-field  appearance="outline" *ngIf="user.roles[0]==='ROLE_APPRENANT'">
+          <mat-form-field appearance="outline" *ngIf="user.roles[0]==='ROLE_APPRENANT'">
             <mat-label>Adresse</mat-label>
             <input matInput formControlName="adresse">
-            <mat-error *ngIf="form.adresse.errors && form.adresse.errors.required">Adresse Obligatoire</mat-error> 
+            <mat-error *ngIf="form.adresse.errors && form.adresse.errors.required">Adresse Obligatoire</mat-error>
           </mat-form-field>
         </div>
 
@@ -54,26 +50,30 @@
               <mat-option value="homme">homme</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field  appearance="outline" *ngIf="user.roles[0]==='ROLE_APPRENANT'">
+          <mat-form-field appearance="outline" *ngIf="user.roles[0]==='ROLE_APPRENANT'">
             <mat-label>Téléphone</mat-label>
             <input matInput formControlName="telephone">
-            <mat-error *ngIf="form.telephone.errors && form.telephone.errors.required">Téléphone Obligatoire</mat-error> 
+            <mat-error *ngIf="form.telephone.errors && form.telephone.errors.required">Téléphone Obligatoire</mat-error>
           </mat-form-field>
         </div>
-        
       </div>
-      <mat-label>Avatar</mat-label>
-      <input type="file" name="avatar" (change)="onFileSelect($event)">
-      
-      <!-- <small *ngIf="form.avatar && form.avatar.errors && form.avatar.errors.required">*Veuillez choisir une image</small> -->
-      <small *ngIf="form.avatar && form.avatar.errors && form.avatar.errors.requiredFileType">*Type de fichier invalide</small>
-      <small *ngIf="!isSelectedValidFile">*Pas pris en compte</small>
+      <div>
+        <mat-label>Avatar</mat-label>
+        <input type="file" name="avatar" (change)="onFileSelect($event)">
+        <small *ngIf="form.avatar && form.avatar.errors && form.avatar.errors.requiredFileType">*Type de fichier
+          invalide</small>
+      </div>
       <div fxLayoutAlign="center">
-        <button fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="primary" type="submit" (click)="onSubmitForm()" [disabled]="!userForm.valid">Modifier</button>
+        <button fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="primary" type="submit" (click)="onSubmitForm()"
+          [disabled]="!userForm.valid">Modifier</button>
       </div>
       <div fxLayoutAlign="center">
         <button fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="accent" type="reset">Annuler</button>
       </div>
     </form>
+    <div *ngIf="isNotFound">
+      <div style="color: red;">404</div>
+      Page Introuvable
+    </div>
   </mat-card>
 </div>

@@ -5,6 +5,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupeCompetences } from 'src/app/modeles/GroupeCompetences';
 import { Referentiel } from 'src/app/modeles/Referentiel';
+import { AlertService } from 'src/app/_services/alert.service';
 import { CustomValidatorsService } from 'src/app/_services/custom-validators.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
@@ -31,7 +32,8 @@ export class SingleReferentielComponent implements OnInit {
     addOnBlur = true;
     separatorKeysCodes = [COMMA, ENTER];
     removable = true;
-    constructor(private userService: UserService, private formBuilder: FormBuilder, private customValidatorsService: CustomValidatorsService, private router: Router, private activatedRoute: ActivatedRoute) { }
+    isNotFound = false;
+    constructor(private userService: UserService, private formBuilder: FormBuilder, private customValidatorsService: CustomValidatorsService, private router: Router, private activatedRoute: ActivatedRoute, private alertService: AlertService) { }
 
     id = this.activatedRoute.snapshot.params['id'];
     referentielUrl = environment.apiUrl + '/admin/referentiels/' + this.id;
@@ -51,8 +53,6 @@ export class SingleReferentielComponent implements OnInit {
                     'critereAdmission': [''],
                     'programme': ['']
                 });
-
-
                 this.cutStringByPeriod(referentiel.critereEvaluation, this.critereEvaluationList);
                 this.cutStringByPeriod(referentiel.critereAdmission, this.critereAdmissionList);
                 this.gcList = referentiel.groupeCompetences;
@@ -73,18 +73,18 @@ export class SingleReferentielComponent implements OnInit {
                         });
                     }
                 )
-            }
+            },
+            () => this.isNotFound = true
         )
     }
 
     gcControl = new FormControl([]);
-
-    remove(element, tableau) {
+    remove(element: any, tableau: any) {
         this.userService.removeFirst(tableau, element);
     }
 
     //   suppression de gc par defaut (chips)
-    removeGc(element) {
+    removeGc(element: GroupeCompetences) {
         this.userService.removeFirst(this.gcList, element);
         this.gcLibelles.push(element.libelle);
     }
@@ -97,9 +97,10 @@ export class SingleReferentielComponent implements OnInit {
         this.userService.addChip(event, this.critereAdmissionList);
     }
 
-    onFileSelect(event) {
+    onFileSelect(event: any) {
         if (event.target.files.length > 0) {
             const file = event.target.files[0];
+            this.referentielForm.get('programme').setValidators(this.customValidatorsService.requiredFileType(['pdf']));
             this.referentielForm.get('programme').setValue(file);
         }
     }
@@ -129,9 +130,7 @@ export class SingleReferentielComponent implements OnInit {
         console.log(this.groupeCompetences);
 
         this.critereEvaluationList.forEach(element => {
-            // if (element != '') {
             this.critereEvaluation = this.critereEvaluation + this.makeFistLetterToUpperCase(element) + '.';
-            // }
         });
 
         this.critereAdmissionList.forEach(element => {
@@ -148,10 +147,14 @@ export class SingleReferentielComponent implements OnInit {
         formdata.append('critereAdmission', this.critereAdmission);
         formdata.append('_method', 'PUT');
         this.userService.add(this.referentielUrl, formdata).subscribe(
-            (sucess) => {
+            () => {
                 this.router.navigate(['default/referentiels']);
+                this.alertService.showMsg('Référentiel modifié avec succès');
             },
-            (error) => console.log(error)
+            (error) => {
+                const ereur = this.userService.handleError(error);
+                this.alertService.showErrorMsg(ereur);
+            }
         );
     }
 

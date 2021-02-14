@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { element } from 'protractor';
 import { Competence } from 'src/app/modeles/Competence';
 import { GroupeCompetences } from 'src/app/modeles/GroupeCompetences';
-import { Niveau } from 'src/app/modeles/Niveau';
+import { AlertService } from 'src/app/_services/alert.service';
 import { UserService } from 'src/app/_services/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -15,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SingleCompetenceComponent implements OnInit {
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router) { }
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router, private alertService: AlertService) { }
   competenceForm: FormGroup;
   // on initialise le control pour les groupes de competences
   gcControl = new FormControl([]);
@@ -32,6 +31,7 @@ export class SingleCompetenceComponent implements OnInit {
   allGc: GroupeCompetences[] = [];
   body: any;
   levels: any[];
+  isNotFound: boolean = false;
 
   ngOnInit(): void {
     this.userService.view(this.competenceUrl).subscribe(
@@ -49,7 +49,7 @@ export class SingleCompetenceComponent implements OnInit {
           'libelle': [this.competence.libelle, Validators.required],
           'descriptif': [this.competence.descriptif, Validators.required],
         },
-          error => console.log(error)
+          () => this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur')
         )
         // on ajoute deux formControls : actions et critere_evaluation pour chaque niveau
         if (this.niveaux.length != 0) {
@@ -64,9 +64,10 @@ export class SingleCompetenceComponent implements OnInit {
             this.competenceForm.addControl('critere_evaluation' + (key), this.formBuilder.control('', Validators.required));
           })
         }
+      },
+      () => {
+        this.isNotFound = true;
       }
-
-
     );
     this.getGc();
   }
@@ -85,9 +86,16 @@ export class SingleCompetenceComponent implements OnInit {
   onSubmitForm() {
     let updatedArrayGc: any[] = [];
     let niveauOfCompetences: any[] = [];
-    const updateNiveaux: any[] = [];
     const updatedNiveauxArray = [];
-
+    // on ajoute les nvx grps de competences ajoutés
+    if ((this.gcControl.value).length != 0) {
+      this.gcControl.value.forEach(element => {
+        if (this.gcOfCompetence.indexOf(element) == -1) {
+          this.gcOfCompetence.push(element);
+          this.userService.removeFirst(this.groupeCompetences, element)
+        }
+      });
+    }
     this.gcOfCompetence.forEach(libelle => {
       this.allGc.forEach(element => {
         if (element.libelle == libelle) {
@@ -112,7 +120,6 @@ export class SingleCompetenceComponent implements OnInit {
     }
     // sinon on cree les niveau
     else {
-      const niveauUrl = environment.apiUrl + '/admin/niveaux';
       this.numberOfNiveaux.forEach(i => {
         let niveau = {
           "actions": this.competenceForm.get('actions' + i).value,
@@ -131,12 +138,13 @@ export class SingleCompetenceComponent implements OnInit {
 
     // envoie des donnees vers le serveur
     this.userService.update(this.competenceUrl, this.body).subscribe(
-      (data) => {
-        console.log(data);
+      () => {
         this.router.navigate(['default/competences']);
+        this.alertService.showMsg('Compétence modifiée avec succès');
       },
-      error => {
-        console.log(error);
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
       }
     )
   }
@@ -159,7 +167,6 @@ export class SingleCompetenceComponent implements OnInit {
     )
   }
 
-
   // fonction pour la suppression d'un gc(chips) du gcOfCompetence (les gc ajoutés au competences)
   // suppression d'un element d'un tableau
   remove(gc: string): void {
@@ -170,18 +177,9 @@ export class SingleCompetenceComponent implements OnInit {
     }
   }
 
-  // l'ajout de groupe de competences
+  // affichage du champs d'ajout de nvx groupe de competences
   addGc() {
     this.isAddingGc = !this.isAddingGc;
-    // si gcControl contient des valeurs on les ajoute à gcOfCompetence s'il n'y existe pas deja
-    if ((this.gcControl.value).length != 0) {
-      this.gcControl.value.forEach(element => {
-        if (this.gcOfCompetence.indexOf(element) == -1) {
-          this.gcOfCompetence.push(element);
-          this.userService.removeFirst(this.groupeCompetences, element)
-        }
-      });
-    }
   }
 
   // fonction pour l'annulation de la modification

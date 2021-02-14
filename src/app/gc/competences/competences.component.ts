@@ -17,8 +17,6 @@ import Swal from 'sweetalert2'
 })
 export class CompetencesComponent implements OnInit {
   
-  // displayedColumns: string[] = ['libelle', 'descriptif', 'actions'];
-
   competenceUrl = environment.apiUrl+'/admin/competences'
 
   @ViewChild(MatSort) sort: MatSort;
@@ -27,15 +25,10 @@ export class CompetencesComponent implements OnInit {
   listDataOne: MatTableDataSource<any>;
   obs: Observable<any>;
 
-  // @ViewChild('TableOnePaginator', {static: true}) tableOnePaginator: MatPaginator;
-
-
   @ViewChild('PaginatorTwo', {static: true}) paginatorTwo: MatPaginator;
   listDataTwo: MatTableDataSource<any>;
   obsTwo: Observable<any>;
 
-
-  
   searchKey :string;
   constructor(private userService: UserService, private changeDetectorRef: ChangeDetectorRef, private alertService: AlertService) { }
 
@@ -54,7 +47,10 @@ export class CompetencesComponent implements OnInit {
         this.listDataOne.paginator = this.paginatorOne;
         this.obs = this.listDataOne.connect();
       },
-      error => console.log(error)
+      () => {
+        this.alertService.showProgressSpinner();
+        this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur')
+      }
     )
   }
 
@@ -68,10 +64,12 @@ export class CompetencesComponent implements OnInit {
         this.listDataTwo.paginator = this.paginatorTwo;
         this.obsTwo = this.listDataTwo.connect();
       },
-      error => console.log(error)
+      () => {
+        this.alertService.showProgressSpinner();
+        this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur');
+      }
     )
   }
-
 
   onSearchClear(){
     this.searchKey = "";
@@ -81,25 +79,16 @@ export class CompetencesComponent implements OnInit {
   applyFilter(){
     this.listDataOne.filter = this.searchKey.trim().toLocaleLowerCase();
     this.listDataTwo.filter = this.searchKey.trim().toLocaleLowerCase();
-
   }
 
   // fonction pour la suppression d'une competence
-  onDeleteCompetence(id){
+  onDeleteCompetence(id: number){
     const url = this.competenceUrl+'/'+id;
-    console.log(url);
-    this.alertService.confirmDeleting('Etes-vous sur de supprimer cette compétence?').then((result) => {
-      if (result.isConfirmed) 
-      {
-        this.userService.archive(url).subscribe((result) => 
-        {
-          console.log(result);
-          this.getCompletCompetences()
-        },
-        (error) => console.log(error)
-          );
+    this.alertService.confirmDeleting('Etes-vous de vouloir supprimer cette compétence').then((result) => {
+      if (result.isConfirmed) {
+        this.userService.archive(url).subscribe(() => this.getCompletCompetences());
         Swal.fire(
-          'Compétence archivée !',
+          'Compétence supprimée avec succès!',
         )
       }
     })

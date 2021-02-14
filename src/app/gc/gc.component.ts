@@ -6,7 +6,9 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Competence } from '../modeles/Competence';
 import { GroupeCompetences } from '../modeles/GroupeCompetences';
+import { AlertService } from '../_services/alert.service';
 import { UserService } from '../_services/user.service';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-gc',
@@ -18,9 +20,6 @@ export class GcComponent implements OnInit {
   listData: MatTableDataSource<any>;
   searchKey :string;
   panelOpenState = false;
-  // pour mockdata
-  // gcUrl = environment.mockdataUrl+'/gc';
-  // pour l'api
   gcUrl = environment.apiUrl+'/admin/groupe_competences';
   listGc:GroupeCompetences[]=[];
   competences:Competence[]=[];
@@ -29,7 +28,7 @@ export class GcComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   obs: Observable<any>;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getListGc();
@@ -45,7 +44,10 @@ export class GcComponent implements OnInit {
         this.listData.paginator = this.paginator;
         this.obs = this.listData.connect();
       },
-      error => console.log(error)
+      () => {
+        this.alertService.showProgressSpinner();
+        this.alertService.showErrorMsg('Désolé, une ereur est survenue du serveur')
+      }
       )
   }
 
@@ -58,8 +60,16 @@ export class GcComponent implements OnInit {
     this.listData.filter = this.searchKey.trim().toLocaleLowerCase();
   }
 
-  onArchiveGc(){
-
+  onArchiveGc(id: number){
+    const url = environment.apiUrl + '/admin/groupe_competences/' + id;
+    this.alertService.confirmDeleting('Etes-vous de vouloir supprimer cette groupe de compétences').then((result) => {
+      if (result.isConfirmed) {
+        this.userService.archive(url).subscribe(() => this.getListGc());
+        Swal.fire(
+          'Groupe de compétences supprimé avec succès!',
+        )
+      }
+    })
   }
 
 }

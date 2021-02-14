@@ -6,8 +6,9 @@
   </button>
   <mat-form-field class="search-form-field" floatLabel="never">
     <input matInput [(ngModel)]="searchKey" placeholder="Rechercher" autocomplete="off" (keyup)="applyFilter()">
-    <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
-      (click)="onSearchClear()"></button>
+    <button mat-button matSuffix *ngIf="searchKey" (click)="onSearchClear()">
+      <mat-icon>cancel</mat-icon>
+    </button>
   </mat-form-field>
 </div>
 
@@ -20,13 +21,11 @@
           <!-- si !element.isEdit on affiche le boutton-->
           <div *ngIf="!element.isEdit">
             <div class="btn-edit" *ngIf="col === '$$edit'; spanHeader">
-              <!-- <button (click)="element.isEdit = !element.isEdit">Edit</button> -->
               <button (click)="element.isEdit = !element.isEdit; onInitInput()" style="margin-right: 5px;"
                 class="btn btn-button btn-outline-info">Modifier</button>
               <button (click)="showApprenantsOfPs(element.id)" style="margin-right: 5px;"
                 class="btn btn-button btn-outline-warning">Detail</button>
               <button (click)="onArchivePs(element.id)" class="btn btn-button btn-outline-danger">Supprimer</button>
-
             </div>
             <span #spanHeader>
               {{element[col]}}
@@ -38,20 +37,14 @@
               <button (click)="element.isEdit = !element.isEdit; onEdit(element.id)" style="margin-right: 5px;"
                 class="btn btn-button btn-outline-info">Valider</button>
             </div>
-            <!-- si col!=$$edit cad col=libelle on va afficher le template -->
             <ng-template #defaultField>
               <mat-form-field appearance="outline">
-                <!-- <mat-label>{{col}}</mat-label> -->
-                <!-- <form #psForm="ngForm"> -->
                 <input name="libelle" type="text" matInput value="{{element.libelle}}" (change)="changeLibelle($event)">
-                <!-- </form> -->
               </mat-form-field>
             </ng-template>
           </div>
         </mat-cell>
       </ng-container>
-
-
 
       <ng-container matColumnDef="loading">
         <mat-footer-cell *matFooterCellDef colspan="6">
@@ -66,8 +59,6 @@
     </mat-table>
     <mat-paginator #TableOnePaginator="matPaginator" [pageSizeOptions]="[7, 10, 25, 100]" [pageSize]="7" showFirstLastButtons></mat-paginator>
     <div fxLayoutAlign="center" *ngIf="addNewPs">
-      <!-- <app-new-profilsortie></app-new-profilsortie> -->
-
       <!-- formulaire d'ajout -->
       <form [formGroup]="psForm" fxLayoutGap="10px">
         <mat-form-field appearance="outline">
@@ -79,14 +70,12 @@
         <button type="submit" (click)="onSubmitForm()" style="display: inline-block; width: 10px;" aria-label="Close"
           style="margin-right: 5px;" class="btn btn-button btn-outline-info"
           [disabled]="!psForm.valid">Valider</button>
-        <!-- <button mat-raised-button color="primary" type="submit" (click)="onSubmitForm()">Créer</button> -->
         <button type="button" color="accent" type="reset" class="btn btn-button btn-outline-warning"
-          (click)="onCancelAdding()">Annuler</button>
+          (click)="onCancelAdding()">Fermer</button>
       </form>
       <!-- formulaire d'ajout -->
     </div>
   </div>
-
 
   <!-- liste des apprenants du profil de sortie -->
   <div [ngClass]="{'hide':!isShowDetails}"  fxFlex="40" style="border-left: 0.1px solid rgb(190, 187, 187);">
@@ -101,10 +90,6 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let apprenant">{{apprenant.prenom}} {{apprenant.nom}}</mat-cell>
       </ng-container>
-      <!-- <ng-container matColumnDef="email">
-        <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-        <mat-cell *matCellDef="let apprenant">{{apprenant.email}}</mat-cell>
-      </ng-container> -->
       <mat-header-row *matHeaderRowDef="displayedColumnsTwo"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumnsTwo;"></mat-row>    
     </mat-table>

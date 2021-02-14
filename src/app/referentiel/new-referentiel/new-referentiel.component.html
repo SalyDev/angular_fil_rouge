@@ -4,7 +4,6 @@
             (ngSubmit)="onSubmitForm()">
             <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-sm="column">
                 <div fxLayout="column" fxFlex="50">
-                    <!-- <mat-toolbar fxLayoutAlign="center center">Creation de référentiel</mat-toolbar> -->
                     <mat-form-field appearance="outline">
                         <mat-label>Libellé</mat-label>
                         <input matInput formControlName="libelle">
@@ -71,8 +70,6 @@
 
                         </mat-select>
                     </mat-form-field>
-
-
                     <mat-label>Programme</mat-label>
                     <input type="file" name="programme" (change)="onFileSelect($event)">
                     <!--                
@@ -82,7 +79,6 @@
                     <mat-error
                         *ngIf="referentielForm.controls.programme.errors && referentielForm.controls.programme.errors.requiredFileType">
                         *Type de fichier invalide</mat-error>
-
                 </div>
             </div>
             <div fxLayout="row" fxLayoutAlign="center">

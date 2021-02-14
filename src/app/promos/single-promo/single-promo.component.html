@@ -1,8 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="center center">
-    <mat-card fxLayout="row" fxFlex="100" fxLayoutAlign="center" class="container-bloc">
-        <form [formGroup]="promoForm" (ngSubmit)="onSubmitForm()" *ngIf="promoForm" fxFlex="100" fxLayoutAlign="stretch"
+    <mat-card fxLayout="row" fxFlex="100" class="container-bloc">
+        <form [formGroup]="promoForm" (ngSubmit)="onSubmitForm()" *ngIf="promoForm" fxFlex="100"
             fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
-            <!-- <mat-toolbar fxLayoutAlign="center center">Modification de promo</mat-toolbar> -->
             <div fxFlex="50" fxLayout="column">
                 <mat-form-field appearance="outline">
                     <mat-label>Titre</mat-label>
@@ -50,21 +49,21 @@
             <div fxFlex="50" fxLayout="column">
                 <mat-form-field appearance="outline">
                     <mat-label>Date début</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="datedebut">
+                    <input matInput [matDatepicker]="picker" formControlName="debut" value="hhg">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-error
-                        *ngIf="promoForm.controls.datedebut.errors && promoForm.controls.datedebut.errors.required">
+                        *ngIf="promoForm.controls.debut.errors && promoForm.controls.debut.errors.required">
                         *Champs obligatoire
                     </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                     <mat-label>Date fin</mat-label>
-                    <input matInput [matDatepicker]="picker1" formControlName="datefin">
+                    <input matInput [matDatepicker]="picker1" formControlName="fin">
                     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
-                    <mat-error *ngIf="promoForm.controls.datefin.errors && promoForm.controls.datefin.errors.required">
+                    <mat-error *ngIf="promoForm.controls.fin.errors && promoForm.controls.fin.errors.required">
                         *Champs obligatoire
                     </mat-error>
                 </mat-form-field>
@@ -99,5 +98,9 @@
                 </div>
             </div>
         </form>
+        <div *ngIf="isNotFound">
+            <div style="color: red;">404</div>
+            Page Introuvable
+        </div>
     </mat-card>
 </div>

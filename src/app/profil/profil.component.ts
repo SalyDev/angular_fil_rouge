@@ -10,6 +10,7 @@ import Swal from 'sweetalert2'
 import { AlertService } from '../_services/alert.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../modeles/User';
+import { AuthService } from '../_services/auth.service';
 
 
 @Component({
@@ -25,8 +26,9 @@ export class ProfilComponent implements OnInit {
   profilForm: FormGroup;
   users:User[] = [];
   isShowDetails: boolean = false;
-  searchKey :string;
-  constructor(private userService:UserService, public activatedRoute:ActivatedRoute, private alertService: AlertService) { }
+  searchKey: string;
+  currentUserProfil: string;
+  constructor(private userService:UserService, public activatedRoute:ActivatedRoute, private alertService: AlertService, private authService: AuthService) { }
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -43,6 +45,7 @@ export class ProfilComponent implements OnInit {
   
   ngOnInit(): void {
     this.getProfils();
+    this.getCurrentUser();
   }
 
   getProfils(){
@@ -53,8 +56,18 @@ export class ProfilComponent implements OnInit {
           this.dataSourceOne.sort = this.sort;
           this.dataSourceOne.paginator = this.tableOnePaginator;
         },
-        error => console.log(error),
+        () => this.alertService.showErrorMsg('Désolé une erreur est survenue du serveur. Réessayez plus tard.'),
     );
+  }
+
+  // on recupere l'utilisateur connecté enfin de lui empecher de
+  // supprimer ou de modifier son propre  profil
+  getCurrentUser(){
+    this.authService.getUserInfos().subscribe(
+      (user) => {
+        this.currentUserProfil = user.profil.libelle;
+      }
+    )
   }
   
   onArchiveProfil(id:number){
@@ -84,7 +97,7 @@ export class ProfilComponent implements OnInit {
     this.libelleUpdated = undefined;
   }
 
-  onEdit(id)
+  onEdit(id: number)
   {
     // si la valeur du libellé a changé
     const url = this.profilUrl+'/'+id;
@@ -92,17 +105,21 @@ export class ProfilComponent implements OnInit {
       this.userService.update(url, {
         "libelle":this.libelleUpdated
         })
-        .subscribe(successmsg=>{
-          console.log(successmsg);
+        .subscribe(
+          ()=>{
+          this.alertService.showMsg('Profil modifié avec succès');
           this.getProfils();
       },
-      error => console.log(error)
+      (error) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showMsg(ereur);
+      }
       );
     }
   }
 
   // detection de modification du libellé
-  changeLibelle(event){
+  changeLibelle(event: any){
     this.libelleUpdated = event.target.value;
   }
 
@@ -118,11 +135,14 @@ export class ProfilComponent implements OnInit {
               "libelle": this.profilForm.get('libelle').value
               };
     this.userService.add(this.profilUrl,body).subscribe(
-      successResponse => {
+      () => {
         this.getProfils();
-        console.log(successResponse)
+        this.alertService.showMsg('Profil ajouté avec succès');
       },
-      error => console.log(error)
+      (error: any) => {
+        const ereur = this.userService.handleError(error);
+        this.alertService.showErrorMsg(ereur);
+      }
     );
   }
 
@@ -140,7 +160,7 @@ export class ProfilComponent implements OnInit {
         this.dataSourceTwo = new MatTableDataSource(users);
         this.dataSourceTwo.paginator = this.tableTwoPaginator;
       },
-      (error) => console.log(error)
+      () => this.alertService.showErrorMsg('Désolé, une erreur est survenue du serveur. Réessayez plus tard.')
     )
   }
 

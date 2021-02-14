@@ -3,17 +3,16 @@
     <form [formGroup]="referentielForm" fxFlex="row" fxFlex="100" (ngSubmit)="onSubmitForm()"
       *ngIf="referentielForm">
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-sm="column">
-        <!-- <mat-toolbar fxLayoutAlign="center center">Modification de référentiel</mat-toolbar> -->
         <div fxLayout="column" fxFlex="50">
           <mat-form-field appearance="outline">
             <mat-label>Libellé</mat-label>
             <input matInput formControlName="libelle">
-            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
+            <mat-error *ngIf="referentielForm.controls.libelle.errors && referentielForm.controls.libelle.errors.required">*Libellé Obligatoire</mat-error> 
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Présentation</mat-label>
             <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" formControlName="presentation"></textarea>
-            <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
+            <mat-error *ngIf="referentielForm.controls.presentation.errors && referentielForm.controls.presentation.errors.required">*Présentation Obligatoire</mat-error> 
           </mat-form-field>
           <!-- gc par defaut -->
 
@@ -33,12 +32,12 @@
 
           <mat-label>Programme</mat-label>
           <input type="file" name="programme" (change)="onFileSelect($event)">
+          <mat-error *ngIf="referentielForm.controls.programme.errors && referentielForm.controls.programme.errors.requiredFileType">*Fichier invalide</mat-error> 
+
           <!-- gc par defaut -->
 
         </div>
         <div fxLayout="column" fxFlex="50">
-          <!-- <mat-error *ngIf="profilForm.controls.libelle.errors && profilForm.controls.libelle.errors.required">Libellé Obligatoire</mat-error>  -->
-
           <mat-form-field class="example-chip-list" appearance="outline">
             <mat-label>Critères d'admission</mat-label>
             <mat-chip-list #chipList2 aria-label="">
@@ -74,7 +73,6 @@
           <mat-form-field *ngIf="isAddingGc">
             <mat-label>Groupe de compétences</mat-label>
             <mat-select [formControl]="gcControl" multiple (change)="addGc()">
-
               <mat-select-trigger>
                 <mat-chip-list>
                   <mat-chip *ngFor="let gc  of gcControl.value" [removable]="true"
@@ -84,21 +82,23 @@
                   </mat-chip>
                 </mat-chip-list>
               </mat-select-trigger>
-
               <mat-option *ngFor="let gcLibelle of gcLibelles" [value]="gcLibelle">
                 {{gcLibelle}}
               </mat-option>
-
             </mat-select>
           </mat-form-field>
         </div>
       </div>
       <div fxLayout="row" fxLayoutAlign="center">
         <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
-          <button mat-raised-button color="primary" type="submit">Modifier</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!referentielForm.valid">Modifier</button>
           <button mat-raised-button color="accent" type="reset" (click)="onCancelUpdate()">Annuler</button>
         </div>
       </div>
     </form>
+    <div *ngIf="isNotFound">
+      <div style="color: red;">404</div>
+      Page Introuvable
+    </div>
   </mat-card>
 </div>

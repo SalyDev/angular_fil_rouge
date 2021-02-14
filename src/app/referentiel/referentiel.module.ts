@@ -9,7 +9,6 @@ import { MaterialModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PipeModule } from '../pipes/pipe.module';
-import { ResumePipe } from '../pipes/resume.pipe';
 
 
 @NgModule({
