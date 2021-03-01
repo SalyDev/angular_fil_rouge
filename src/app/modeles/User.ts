@@ -10,7 +10,7 @@ export class User
     password:string;
     profil:Profil;
     nom:string;
-    avatar : Blob;
+    avatar : string;
     token: string;
     genre:string;
     adresse?:string;

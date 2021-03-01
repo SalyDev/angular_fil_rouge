@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profilsortie } from 'src/app/modeles/Profilsortie';
 import { AlertService } from 'src/app/_services/alert.service';
+import { AuthService } from 'src/app/_services/auth.service';
 import { CustomValidatorsService } from 'src/app/_services/custom-validators.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../../modeles/User';
@@ -22,7 +23,8 @@ export class SingleUserComponent implements OnInit {
   imgSource: any;
   ps: Profilsortie[] = [];
   isNotFound: boolean = false;
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router, private customValidatorsService: CustomValidatorsService, private alertService: AlertService) { }
+  currentUserId: number;
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router, private customValidatorsService: CustomValidatorsService, private alertService: AlertService, private authService: AuthService) { }
   // on recupere l'id contenu dans l'url
   private id = this.activatedRoute.snapshot.params['id'];
 
@@ -30,7 +32,16 @@ export class SingleUserComponent implements OnInit {
     return this.userForm.controls;
   }
 
+  // on recurepere le user connecté
+  getCurrentUser(){
+    this.authService.getUserInfos().subscribe(
+      (user) => {
+        this.currentUserId = user.id;
+      }
+    )
+  }
   ngOnInit(): void {
+    this.getCurrentUser();
     this.getProfilSorties();
 
     const userUrl = environment.apiUrl + "/users/" + this.id;
@@ -79,6 +90,9 @@ export class SingleUserComponent implements OnInit {
   }
 
   onSubmitForm() {
+    console.log(this.currentUserId);
+    // return;
+    // console.log(this.user.id);
     const prefix = ((this.user.roles[0]).slice(5, (this.user.roles[0]).length) + 's').toLocaleLowerCase();
     this.userUrl = environment.apiUrl + '/admin/' + prefix + '/' + this.user.id;
     const formData = new FormData();
@@ -96,6 +110,20 @@ export class SingleUserComponent implements OnInit {
       () => {
         this.router.navigate(['default/users']);
         this.alertService.showMsg('Utilisateur modifié avec succès');
+        if(this.user.id==this.currentUserId){
+          // this.SidenavComponent.getTheUser();
+          // this.authService.nexUser(editedUser);
+          this.userService.view(this.userUrl).subscribe(
+            (user) => {
+              // console.log(user);
+              this.authService.nexUser(user);
+            },
+            error=>console.log(error)
+          )
+        }
+
+        // console.log(editedUser.avatar);
+        // console.log(this.userForm.get('avatar').value);
       },
       (error) => {
         const ereur = this.userService.handleError(error);
@@ -114,5 +142,7 @@ export class SingleUserComponent implements OnInit {
     )
   }
 
-  
+  onCancelEdit(){
+    this.router.navigate(['default/users']);
+  }
 }

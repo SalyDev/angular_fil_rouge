@@ -68,7 +68,7 @@
           [disabled]="!userForm.valid">Modifier</button>
       </div>
       <div fxLayoutAlign="center">
-        <button fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="accent" type="reset">Annuler</button>
+        <button (click)="onCancelEdit" fxFlex="50" fxFlex.lt-sm="100" mat-raised-button color="accent" type="reset">Annuler</button>
       </div>
     </form>
     <div *ngIf="isNotFound">

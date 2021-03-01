@@ -1,10 +1,10 @@
 <mat-nav-list>
     <div class="profile-card">
         <div class="header">
-            <h2>{{nom}}</h2>
-            <h4>{{email}}</h4>
+            <h2>{{user.prenom}} {{user.nom}}</h2>
+            <h4>{{user.email}}</h4>
         </div>
-        <img class="selected-image" src="{{ 'data:image/jpg;base64,' + avatar }}" alt="">
+        <img class="selected-image" src="{{ 'data:image/jpg;base64,' + user.avatar }}" alt="">
     </div>
     <mat-divider></mat-divider>
     <h2 matSubheader>Dashboard</h2>

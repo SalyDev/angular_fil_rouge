@@ -12,7 +12,6 @@ import { CompetencesComponent } from './competences/competences.component';
 import { PipeModule } from '../pipes/pipe.module';
 import { NewComptenceComponent } from './new-comptence/new-comptence.component';
 import { SingleCompetenceComponent } from './single-competence/single-competence.component';
-import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AdminComponent } from 'src/app/admin/admin.component';
 import { CompetencesComponent } from 'src/app/gc/competences/competences.component';
 import { GcComponent } from 'src/app/gc/gc.component';
 import { NewComptenceComponent } from 'src/app/gc/new-comptence/new-comptence.component';
@@ -30,15 +29,7 @@ const routes: Routes = [
         path:'',
         redirectTo:'profils',
         pathMatch:'full'
-      },
-      {
-      path:'admins',
-      component:AdminComponent,
-      children:[
-        { path:':id', component:SingleUserComponent },
-      ]
-      },
-     
+      },     
       {
         path:'profils',
         component:ProfilComponent,

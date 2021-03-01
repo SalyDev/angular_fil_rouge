@@ -16,9 +16,10 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
   helper = new JwtHelperService();
-  public user;
   actualUser: User;
+  connectedUser2: User;
   private loginUrl = environment.apiUrl+'/login';
+  
 
   constructor(private http: HttpClient, private router: Router, private userService: UserService) { 
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
@@ -60,16 +61,17 @@ export class AuthService {
 
    getUserInfos():Observable<any>{
     let actualUser = JSON.parse(localStorage.getItem('currentUser'));
-    // let actualUserInfos:any[] = [];
-    // on decode le token
     const decoded_token = this.helper.decodeToken(actualUser.token);
-    console.log(decoded_token);
     const email = decoded_token['username'];
     const url = environment.apiUrl+'/admin/user/'+email;
     return this.userService.view(url);
-    // console.log(this.actualUser);
   }
 
+  private connectedUser = new BehaviorSubject(new User());
+  connectedUserObs = this.connectedUser.asObservable();
 
+  nexUser(user: User){
+    this.connectedUser.next(user);
+  } 
 
 }
